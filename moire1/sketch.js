@@ -8,21 +8,21 @@ Colorful moire patterns with lines
 function setup() {
   createCanvas(windowWidth,windowHeight);
   strokeWeight(1);
-  numLinesSlider = createSlider(0,100,40);
+  numLinesSlider = createSlider(1,120,randNum(1,120));
   numLinesSlider.position(10,10);
   numLinesSlider.style('width', '80px');
   
-  opacitySlider = createSlider(0,255,150);
+  opacitySlider = createSlider(0,255,randNum(0,255));
   opacitySlider.position(10,30);
   opacitySlider.style('width', '80px');
   
-  colorSlider = createSlider(0,255,128);
+  colorSlider = createSlider(0,255,randNum(0,255));
   colorSlider.position(10,50);
   colorSlider.style('width', '80px');
   
   buttonState = 0;
-  button = createButton('hwat?');
-  button.position(30,70);
+  button = createButton('click me plz <3');
+  button.position(10,70);
   button.mousePressed(buttonPressed);
 }
 
