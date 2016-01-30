@@ -1,4 +1,4 @@
-var numBubbles = 100;
+var numBubbles = 150;
 var bubbles = [];
 
 function setup() {
@@ -10,7 +10,7 @@ function setup() {
 }
 
 function draw() {
-  background(200,100,210,40);
+  background(200,100,210,80);
 
   for (var i=0; i < bubbles.length; i++) {
     bubbles[i].display();

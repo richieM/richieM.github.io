@@ -8,38 +8,66 @@ path along which it travels: linear, sinusoidal, drunk walk, etc
 behavior when it hits an edge: wrap around, or bounce off?
 ball color:
 ball size:
-
-Have it autoplay!
+xHave it autoplay!
 */
 
-function Bubble(x, y, speed){
-
+function Bubble(){
+	// Location stuff
 	this.x = weightedRandom(floor(2*windowWidth/3),floor(windowWidth/6),0,windowWidth);
 	this.y = weightedRandom(floor(2*windowHeight/3),floor(windowHeight/6),0,windowHeight);
-	this.xSpeed = weightedRandom(0,5,-15,15);
-	this.ySpeed = weightedRandom(0,5,-15,15);
+	this.xSpeed = weightedRandom(0,5,-20,20);
+	this.ySpeed = weightedRandom(0,5,-20,20);
 
+	this.xSinMvtSize = random(0,140); // weightedRandom(80,20,0,160);
+	this.ySinMvtSize = random(0,140); // weightedRandom(80,20,0,160);
+	this.xSinMvtSpeed = weightedRandom(.07,.04,.00001,.4);
+	this.xSinMvtAlpha = 0;
+	this.ySinMvtSpeed = weightedRandom(.07,.04,.00001,.4);
+	this.ySinMvtAlpha = 0;
 
-	// 144,229,203 is weird cyan-ish
-	this.red = weightedRandom(144, 50, 0, 255);
-	this.green = weightedRandom(229, 15, 0, 255);
-	this.blue = weightedRandom(203, 25, 0, 255);
-	this.transp = weightedRandom(150, 60, 0, 255);
+	// Radius Stuff
+	this.radius = weightedRandom(40, 15, 15, 120);
+	this.radiusGrowthSize = weightedRandom(15,8,0,120);
+	this.radiusGrowthSpeed = weightedRandom(.07,.04,.00001,.4);
+	this.radiusGrowthAlpha = 0;
 
-	this.radius = weightedRandom(40, 15, 0, 80);
+	// Color Stuff
+	// 1 out of 4 times use a diff color scheme
+	if (floor(random(0,4)) % 4 == 0) {
+		this.red = weightedRandom(68, 20, 0, 255);
+		this.green = weightedRandom(116, 20, 0, 255);
+		this.blue = weightedRandom(134, 20, 0, 255);
+		this.transp = weightedRandom(150, 100, 0, 255);
+	} else {
+		this.red = weightedRandom(144, 50, 0, 255);
+		this.green = weightedRandom(200, 25, 0, 255);
+		this.blue = weightedRandom(203, 25, 0, 255);
+		this.transp = weightedRandom(150, 60, 0, 255);
+	}
 
+	this.move = function() {
+
+		this.x = this.x - this.xSpeed - this.xSinMvtSize * (sin(this.xSinMvtAlpha) - sin(this.xSinMvtAlpha - this.xSinMvtSpeed)) //- weightedRandom(0,1,-2,2);
+		this.y = this.y - this.ySpeed - this.ySinMvtSize * (sin(this.ySinMvtAlpha) - sin(this.ySinMvtAlpha - this.ySinMvtSpeed)) //-  weightedRandom(0,1,-2,2)
+		
+		this.xSinMvtAlpha +=  this.xSinMvtSpeed;
+		this.ySinMvtAlpha +=  this.ySinMvtSpeed;
+
+		this.wrapBackOntoScreen();
+	}
 
 	this.display = function() {
 		noStroke();
   		fill(this.red, this.green, this.blue, this.transp);
-  		ellipse(this.x, this.y, this.radius, this.radius);
+
+  		currRadius = this.radius + this.radiusGrowthSize * sin(this.radiusGrowthAlpha);
+  		
+  		ellipse(this.x, this.y, currRadius, currRadius);
+  		
+  		this.radiusGrowthAlpha += this.radiusGrowthSpeed;
 	}
 
-	this.move = function() {
-		this.x = this.x - this.xSpeed - random(-4,4);
-		this.y = this.y - this.ySpeed -  random(-4,4); 
-		this.wrapBackOntoScreen();
-	}
+	
 
 	this.wrapBackOntoScreen = function() {
 		if (this.y < 0) {
