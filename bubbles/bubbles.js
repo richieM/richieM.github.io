@@ -45,6 +45,18 @@ function Bubble(){
 		this.transp = weightedRandom(150, 60, 0, 255);
 	}
 
+	this.display = function() {
+		noStroke();
+  		fill(this.red, this.green, this.blue, this.transp);
+
+  		currRadius = this.radius + this.radiusGrowthSize * (sin(this.radiusGrowthAlpha) -  sin(this.radiusGrowthAlpha - this.radiusGrowthSpeed));
+  		
+  		ellipse(this.x, this.y, currRadius, currRadius);
+  		
+  		this.radiusGrowthAlpha += this.radiusGrowthSpeed;
+  		this.radius = currRadius;
+	}
+
 	this.move = function() {
 
 		this.x = this.x - this.xSpeed - this.xSinMvtSize * (sin(this.xSinMvtAlpha) - sin(this.xSinMvtAlpha - this.xSinMvtSpeed)) //- weightedRandom(0,1,-2,2);
@@ -56,19 +68,6 @@ function Bubble(){
 		this.wrapBackOntoScreen();
 	}
 
-	this.display = function() {
-		noStroke();
-  		fill(this.red, this.green, this.blue, this.transp);
-
-  		currRadius = this.radius + this.radiusGrowthSize * sin(this.radiusGrowthAlpha);
-  		
-  		ellipse(this.x, this.y, currRadius, currRadius);
-  		
-  		this.radiusGrowthAlpha += this.radiusGrowthSpeed;
-	}
-
-	
-
 	this.wrapBackOntoScreen = function() {
 		if (this.y < 0) {
 			this.y = windowHeight;
@@ -79,6 +78,16 @@ function Bubble(){
 		} else if (this.x > windowWidth) {
 			this.x = 0;
 		}
+	}
+
+	this.cursorOverBubble = function(){
+		var d = int(dist(this.x, this.y, mouseX, mouseY));
+		if(d<120){
+			return true;
+		} else{
+			return false;
+		}
+		
 	}
 }
 

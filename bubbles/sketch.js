@@ -1,4 +1,4 @@
-var numBubbles = 150;
+var numBubbles = 80;
 var bubbles = [];
 
 function setup() {
@@ -16,6 +16,19 @@ function draw() {
     bubbles[i].display();
     bubbles[i].move();
   }
+
+  for (var i = bubbles.length-1; i >= 0; i--) {
+      var abubble = bubbles[i];
+      if (abubble.cursorOverBubble()) {
+        bubbles.splice(i, 1);
+      }
+      
+    }
+
+    if(bubbles.length <= numBubbles){
+        bubbles.push(new Bubble());
+    }
+
 }
 
 function windowResized() {
