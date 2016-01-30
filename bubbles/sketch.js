@@ -1,4 +1,4 @@
-var numBubbles = 80;
+var numBubbles = 151;
 var bubbles = [];
 
 function setup() {

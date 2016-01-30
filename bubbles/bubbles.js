@@ -82,7 +82,7 @@ function Bubble(){
 
 	this.cursorOverBubble = function(){
 		var d = int(dist(this.x, this.y, mouseX, mouseY));
-		if(d<120){
+		if(d<100){
 			return true;
 		} else{
 			return false;
