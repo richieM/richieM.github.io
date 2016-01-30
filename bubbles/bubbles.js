@@ -26,7 +26,7 @@ function Bubble(x, y, speed){
 	this.blue = weightedRandom(203, 25, 0, 255);
 	this.transp = weightedRandom(150, 60, 0, 255);
 
-	this.radius = weightedRandom(30, 10, 0, 60);
+	this.radius = weightedRandom(40, 15, 0, 80);
 
 
 	this.display = function() {
@@ -36,8 +36,8 @@ function Bubble(x, y, speed){
 	}
 
 	this.move = function() {
-		this.x = this.x - this.xSpeed;
-		this.y = this.y - this.ySpeed;
+		this.x = this.x - this.xSpeed - random(-4,4);
+		this.y = this.y - this.ySpeed -  random(-4,4); 
 		this.wrapBackOntoScreen();
 	}
 

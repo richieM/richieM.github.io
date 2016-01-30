@@ -10,7 +10,7 @@ function setup() {
 }
 
 function draw() {
-  background(200,100,210);
+  background(200,100,210,40);
 
   for (var i=0; i < bubbles.length; i++) {
     bubbles[i].display();
