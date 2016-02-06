@@ -20,7 +20,7 @@ function setup() {
   colorSlider.position(10,50);
   colorSlider.style('width', '80px');
   
-  buttonState = 0;
+  colorButtonState = 0;
   button = createButton('click me plz <3');
   button.position(10,70);
   button.mousePressed(buttonPressed);
@@ -38,29 +38,45 @@ function draw() {
   background(255,255,255,opacitySlider.value()); // clean up background
   
   for (i = 0; i < numLinesSlider.value(); i+= 1) {
-    if (buttonState == 0) {
-      stroke(getRed(i/numLinesSlider.value()), getBlue(i/numLinesSlider.value()), getGreen(i/numLinesSlider.value()));
-    } else if (buttonState == 1) {
-      stroke(randNum(0,255), randNum(0,255), randNum(0,255));
-    } else if (buttonState == 2) {
-      stroke(0,0,0);
-    }
-    
-    
-    line(currentX, 0, mouseX, mouseY); // top of screen, follow cursor
-    line(currentX, 0, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // top of screen, cursor flipped
-    
-    line(currentX, windowHeight, mouseX, mouseY); // bottom of screen, follow cursor
-    line(currentX, windowHeight, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // bottom of screen, cursor flipped
-    
-    line(0, currentY, mouseX, mouseY); // left side of screen, follow cursor
-    line(0, currentY, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // left side of screen, cursor flipped
-    
-    line(windowWidth, currentY, mouseX, mouseY); // right side of screen, follow cursor
-    line(windowWidth, currentY, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // right side of screen, cursor flipped
-    
-    currentX += windowWidth / numLinesSlider.value();
-    currentY += windowHeight / numLinesSlider.value();
+    if (colorButtonState == 3) { // fully automated
+      /*
+      Introduce automated properties for the screen
+      Qualities that can be automated:
+      -- the location of the cursor -- by tracing a mathematical function
+      -- the number of lines
+      -- the opacity
+      -- if i wanna get crazy fancy, the locations of the lines
+
+      Once I've done this, I could possibly refactor this into the line(...) code 
+      below so it's not all redundant shit.
+      */
+
+
+    } else { // not automated
+      if (colorButtonState == 0) {
+        stroke(getRed(i/numLinesSlider.value()), getBlue(i/numLinesSlider.value()), getGreen(i/numLinesSlider.value()));
+      } else if (colorButtonState == 1) {
+        stroke(randNum(0,255), randNum(0,255), randNum(0,255));
+      } else if (colorButtonState == 2) {
+        stroke(0,0,0);
+      }
+      
+      
+      line(currentX, 0, mouseX, mouseY); // top of screen, follow cursor
+      line(currentX, 0, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // top of screen, cursor flipped
+      
+      line(currentX, windowHeight, mouseX, mouseY); // bottom of screen, follow cursor
+      line(currentX, windowHeight, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // bottom of screen, cursor flipped
+      
+      line(0, currentY, mouseX, mouseY); // left side of screen, follow cursor
+      line(0, currentY, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // left side of screen, cursor flipped
+      
+      line(windowWidth, currentY, mouseX, mouseY); // right side of screen, follow cursor
+      line(windowWidth, currentY, map(mouseY, 0, windowHeight, 0, windowWidth), map(mouseX, 0, windowWidth, 0, windowHeight)); // right side of screen, cursor flipped
+      
+      currentX += windowWidth / numLinesSlider.value();
+      currentY += windowHeight / numLinesSlider.value();
+    } 
   }
 }
 
@@ -69,8 +85,8 @@ function randNum(min, max) {
 }
 
 function buttonPressed() {
-  buttonState += 1;
-  buttonState %= 3;
+  colorButtonState += 1;
+  colorButtonState %= 4;
 }
 
 function getRed(percent) {
