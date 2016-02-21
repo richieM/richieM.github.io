@@ -12,7 +12,7 @@ function setup() {
   stickerSize = 75;
   doneYet = false; 
   textSize(32);
-  text("Sticker Picker", windowWidth/3, windowHeight/10);
+  text("Sticker Picker", randNum(20,windowWidth-300), randNum(32,windowHeight-32));
 }
 
 function draw() {
