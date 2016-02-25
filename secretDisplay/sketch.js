@@ -15,8 +15,14 @@ function setup() {
   doneYet = false; 
   textSize(50);
   //text("Sticker Picker", randNum(20,windowWidth-300), randNum(32,windowHeight-32));
-  randomText = ["I'm a nasty mofo", "I sometimes like the smell of my own farts",
-               "I hate salads."];
+  randomText = ["I'm a nasty mofo",
+                "I sometimes like the smell of my own farts",
+                "I hate salads.",
+                "You smell.",
+                "I lose interest in girls if they like me",
+                "I'm not sure I like you so much",
+                "I put sriracha on everything",
+                "I eat too much ramen."];
 }
 
 function draw() {
