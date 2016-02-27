@@ -1,16 +1,11 @@
-// Learning Processing
-// Daniel Shiffman
-// http://www.learningprocessing.com
-
-// Example 1-1: stroke and fill
-
 /*
-Basic idea here is to do lots of circles and 
-squares that jsut float around
+Author: Richie Mendelsohn
 
-mm sounds complicated tho.  the movement stuff is
-kinda hard, but would be good.
+Lines emanating down like a magic rainbow
 
+TODO:
+- something cool with RGB, where its like a magic rainbow slider coming thru the
+happy color land
 */
 
 
@@ -18,7 +13,10 @@ kinda hard, but would be good.
 function setup() {
   createCanvas(windowWidth, windowHeight);
   stroke(0);
-  //noLoop();
+
+  frameRateSlider = createSlider(.2,60,12);
+  frameRateSlider.position(windowWidth-90,10);
+  frameRateSlider.style('width', '80px');
 }
 
 function draw() {
@@ -29,6 +27,8 @@ function draw() {
   //rect(x,y,width,height)
   //ellipse(x,y,width,height)
   //triangle(x1,y1,x2,y2,x3,y3)
+  frameRate(frameRateSlider.value());
+
   numShapes = 30;
 
   background(randNum(0,255),randNum(0,255),randNum(0,255));
