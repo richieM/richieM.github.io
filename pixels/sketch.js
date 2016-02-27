@@ -19,14 +19,15 @@ var initialColors = [[219, 76, 37],
                       [89, 219, 37],
                       [37, 180, 219],
                       [167,37,219]];
-var currColors;
+var colorCount = 0;
+var currColors = initialColors[colorCount];
+
 
 
 function setup() {
   var canvas = createCanvas(windowWidth, windowHeight);
   strokeWeight(0);
   frameRate(2);
-  currColors = initialColors[Math.floor(random(0,initialColors.length))];
 }
 
 function draw() {
@@ -41,7 +42,8 @@ function draw() {
   console.log("done!");
   if (2*increment > windowWidth || 2*increment > windowHeight) {
     increment = 6;
-    currColors = initialColors[Math.floor(random(0,initialColors.length))];
+    colorCount = (colorCount + 1) % initialColors.length;
+    currColors = initialColors[colorCount];
   } else {
     increment = Math.floor(increment*1.5);
   }
