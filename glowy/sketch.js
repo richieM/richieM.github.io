@@ -31,7 +31,7 @@ function setup() {
 
   frameRate(32);
 
-  colorStepSlider = createSlider(.1,20,4);
+  colorStepSlider = createSlider(.1,40,4);
   colorStepSlider.position(windowWidth-90,10);
   colorStepSlider.style('width', '80px');
 }
