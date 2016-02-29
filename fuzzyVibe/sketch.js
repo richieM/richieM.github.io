@@ -42,7 +42,7 @@ function setup() {
     colorBuffer[i] = getRGBFromColorSphere();
   }
 
-  frameRate(60);
+  frameRate(30);
 
   colorStepSlider = createSlider(1,20,2);
   colorStepSlider.position(windowWidth-90,10);
