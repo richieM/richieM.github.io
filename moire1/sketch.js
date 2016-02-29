@@ -86,7 +86,7 @@ function randNum(min, max) {
 
 function buttonPressed() {
   colorButtonState += 1;
-  colorButtonState %= 4;
+  colorButtonState %= 3;
 }
 
 function getRed(percent) {
