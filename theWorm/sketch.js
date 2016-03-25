@@ -87,7 +87,7 @@ function draw() {
       background(140,40,200);
       textSize(40);
       text("Welcome!", windowWidth/6, windowHeight/3);
-      text("Press z to play Speed, Press x to play Memory", windowWidth/6, windowHeight/2);
+      text("Press x to play Memory", windowWidth/6, windowHeight/2);
   } else if (currGameState === "in_memory_game") {
     if (memoryGameState === "demo") { // Demo moves to user
       memoryGameDemoCounter += (1 / theFrameRate * 1000);
@@ -186,7 +186,7 @@ function draw() {
     background(200,100,30);
     textSize(32);
     text("Oops, you lose!!!!!!", windowWidth/6, windowHeight/3);
-    text("Press z to play Speed, Press x to play Memory", windowWidth/6, windowHeight/2);
+    text("Press x to play Memory", windowWidth/6, windowHeight/2);
   }
 }
 
