@@ -1,33 +1,56 @@
 /*
 Richie Mendelsohn
-Digiriddledoo - Makeymakey Moire magic Speed / Memory collab make friends game
+Remember Your Friends - Makeymakey Moire magic Speed / Memory collab make friends game
 3/21/16
 */
 
 /*
 TODO:)
-- Memory
-  - Visualizations when user is picking
-  - Show letters during animations (for now)...
-  - Speed up demo when there's more moves, and like slow the pace down as it gets to the end...
-- Speed
-  - Do I want it to be a countdown? or rather that it times you to finish and then shows your score
-    so you can compete with your friends
+
+- Keep it simple, stupid! <KISS>
+- [P0] Memory
+  - [P2[ Speed up demo when there's more moves, and like slow the pace down as it gets to the end...?
 - Overall
-  - Leaderboards perhaps?
-  - Doper visualizations brainstorming...
-  - Test with actual makey makey :)
-  - Reprogram makey makey for the buttons to not be o/p/q/v
-  - Putting in basic sounds
-  - Recording new sounds!
+  - Clear instructions
+  - [P0] ** Developing a strong theme or aesthetic around the Game, and allowing that to influence
+    the visual design decisions.
+      - Connection...
+  - [P1] Home screen
+    - Leaderboards perhaps?
+  - [P0] Doper visualizations brainstorming...
+    - 4 Sketches for each station...?
+      - Moire
+      - Some bubbles thingy?
+      - Hearts / Love
+    - Visualizations when user is guessing can be Frame Difference or Line outline or both...
+    - During the area visualizations, what can I do with the rest of the black space thats more exciting?
+      Some sort of subtle line visualization or something, maybe Moire with like black grey lines or something...
+      Or camera stuff ... Frame difference!!!!
+    - Do I want a camera!?
+    - A background sketch for Memory mode when you're waiting to guess
+      - Something with camera? The Edge Detection sketch but fancied up?
+      - Bubbles floating around
+      - Lightning or something...
+    - A home screen visualization that could maybe just be cycling through the 4 station viz's
+  - [P0] Test with actual makey makey :)
+  - [P0] Every 3rd(??) guess, pause for an activity...
+  - [P1] Reprogram makey makey for the buttons to not be o/p/q/v
+  - [P0] Putting in basic sounds
+  - [P1] Recording new sounds!
 */
 
+// Debug
+var debug = true;
 
 // General game vars
-var spotCodes = ['o', 'p', 'q', 'v'];
+var spotCodes = ['a', 's', 'd', 'f'];
+var spotColors = [[255,0,0], [0,255,0], [0,0,255], [100,200,230]]
 var currComputerPick;
 var theFrameRate;
-var currGameState = 'hanging_out'; // hanging_out, in_speed_game, in_memory_game, user_lost
+var currGameState = 'hanging_out'; // hanging_out, in_memory_game, user_lost
+
+// Visual vars
+var opacity = 30;
 
 // Speed game vars
 var speedGuessingTimeMillis;
@@ -37,9 +60,16 @@ var lastGuess = '';
 
 // Memory mode variables
 var computerMoves = [];
-var memoryGameState; // demo, user_guessing
+var memoryGameState; // demo, user_guessing, user_just_guessed_right, round_complete
+
 var memoryGameDemoCounter;
-var demoMoveLength = 1500;
+var demoMoveLength = 1000;
+
+var userGuessVisualCounter = 0; // counter for showing user's guess
+var userGuessMoveVisualLength = demoMoveLength/2;
+
+var roundCompleteCongratsCounter = 0;
+var roundCompleteCongratsLength = demoMoveLength;
 var currMoveCounter = 0;
 
 function setup() {
@@ -51,131 +81,160 @@ function setup() {
 }
 
 function draw() {
-  background(0,0,0,30);
+  background(0,0,0,opacity);
 
-  if (currGameState == "in_speed_game") {
-    
-    //  If user just guessed, check his entry...
-    if (lastGuess != '') { 
-      if (lastGuess === currComputerPick) {
-        console.log('w00t! Good job:', lastGuess);
-        millisSinceLastMove = 0;
-        currComputerPick = chooseASpot();
-      } else {
-        console.log('Incorrect!', lastGuess);
-      }
-      lastGuess = '';
-    }
-
-    // Update visuals based on the computer's pick
-    if (currComputerPick === 'o') {
-      fill(255,0,0);
-      triangle(windowWidth/2, windowHeight, hourGlassCoeff*windowWidth/2, windowHeight, hourGlassCoeff*windowWidth/2, hourGlassCoeff*windowHeight);
-    } else if (currComputerPick === 'p') {
-      fill(0,255,0);
-      triangle(windowWidth/2, windowHeight, hourGlassCoeff*windowWidth/2, hourGlassCoeff*windowHeight, windowWidth/2, hourGlassCoeff*windowHeight);
-    } else if (currComputerPick === 'q') {
-      fill(0,0,255);
-      triangle(windowWidth/2, windowHeight, windowWidth/2, hourGlassCoeff*windowHeight, windowWidth - hourGlassCoeff * (windowWidth/2), hourGlassCoeff*windowHeight);
-    } else if (currComputerPick === 'v') {
-      fill(100,200,30);
-      triangle(windowWidth/2, windowHeight, windowWidth - hourGlassCoeff * (windowWidth/2), hourGlassCoeff*windowHeight, windowWidth - hourGlassCoeff*windowWidth/2, windowHeight);
-    }
-
-
-    // Has user run out of time?
-    millisSinceLastMove += ( 1 / theFrameRate * 1000);
-    hourGlassCoeff = millisSinceLastMove / speedGuessingTimeMillis;
-    console.log(millisSinceLastMove);
-
-    // If user is out of time, they lose.
-    if (millisSinceLastMove > speedGuessingTimeMillis) {
-      currGameState = "user_lost";
-      lastGuess = '';
-      millisSinceLastMove = 0;
-    }
+  if (currGameState == 'hanging_out') {
+      background(140,40,200);
+      textSize(40);
+      text("Welcome!", windowWidth/6, windowHeight/3);
+      text("Press z to play Speed, Press x to play Memory", windowWidth/6, windowHeight/2);
   } else if (currGameState === "in_memory_game") {
-
     if (memoryGameState === "demo") { // Demo moves to user
       memoryGameDemoCounter += (1 / theFrameRate * 1000);
       console.log(memoryGameDemoCounter);
       if (memoryGameDemoCounter < demoMoveLength) {
         currMove = computerMoves[currMoveCounter];
-        if (currMove === 'o') {
-          fill(255,0,0);
-          triangle(windowWidth/2, windowHeight, 0, windowHeight, 0, 0);
-
-          fill(255);
-          textSize(80);
-          text("o", windowWidth/6, windowHeight/3);
-        } else if (currMove === 'p') {
-          fill(0,255,0);
-          triangle(windowWidth/2, windowHeight, 0, 0, windowWidth/2, 0);
-
-          fill(255);
-          textSize(80);
-          text("p", 2*windowWidth/6, windowHeight/3);
-        } else if (currMove === 'q') {
-          fill(0,0,255);
-          triangle(windowWidth/2, windowHeight, windowWidth/2, 0, windowWidth, 0);
-
-          fill(255);
-          textSize(80);
-          text("q", 4*windowWidth/6, windowHeight/3);
-        } else if (currMove === 'v') {
-          fill(100,200,30);
-          triangle(windowWidth/2, windowHeight, windowWidth, 0, windowWidth, windowHeight);
-
-          fill(255);
-          textSize(80);
-          text("v", 5*windowWidth/6, windowHeight/3);
+        if (currMove === spotCodes[0]) {
+          visualizeMoire(0, spotColors[0], memoryGameDemoCounter/demoMoveLength);
+        } else if (currMove === spotCodes[1]) {
+          visualizeMoire(1, spotColors[1], memoryGameDemoCounter/demoMoveLength);
+        } else if (currMove === spotCodes[2]) {
+          visualizeMoire(2, spotColors[2], memoryGameDemoCounter/demoMoveLength);
+        } else if (currMove === spotCodes[3]) {
+          visualizeMoire(3, spotColors[3], memoryGameDemoCounter/demoMoveLength);
         }
-      } else { // curr move demo counter is over
+      } else { // Current move demo is done, go to next move
         currMoveCounter++;
         if (currMoveCounter < computerMoves.length) {
           memoryGameDemoCounter = 0;
         } else {
           currMoveCounter = 0;
           memoryGameState = 'user_guessing';
-          lastGuess = '';
+          lastGuess = ''; // Clean the guess slate for any errant button presses
         } 
       }
-    } else if (memoryGameState == 'user_guessing') { // User is guessing now
-      if (lastGuess != '') { 
+    } else if (memoryGameState == 'user_guessing') { // Time for user to guess
+      console.log('in user_guessing');
+      if (lastGuess != '') { // If they just guessed...
         if (lastGuess === computerMoves[currMoveCounter]) {
           console.log('w00t! Good job:', lastGuess);
-          currMoveCounter++;
-          if (currMoveCounter == computerMoves.length) { // guessing round complete!
-            console.log("adding a move");
-            computerMoves.push(chooseASpot());
-            memoryGameState = "demo";
-            memoryGameDemoCounter = 0;
-            currMoveCounter = 0;
-          }
+          memoryGameState = 'user_just_guessed_right'
         } else {
           console.log('Incorrect!', lastGuess);
           currGameState = 'user_lost';
           computerMoves = [];
         }
-        lastGuess = '';
+      } else {
+        // TODO show something here...
+        // Maybe show camera visualizations here?
+        // Or at least say, your turn to guess...
       }
-    } 
-  } else if (currGameState == "not_playing") {
-    background(200,100,30);
-    textSize(32);
-    text("Waiting for Player...Press z to play", windowWidth/6, windowHeight/2);
+    } else if (memoryGameState == 'user_just_guessed_right') {
+      // Show what they just guessed...
+          userGuessVisualCounter += (1 / theFrameRate * 1000);
+          console.log(userGuessVisualCounter);
+
+          /// lastGuess could change if user hits something else, which would be sooo confusing for them
+          theGuess = computerMoves[currMoveCounter];
+
+          if (userGuessVisualCounter < userGuessMoveVisualLength) {
+            if (theGuess === spotCodes[0]) {
+              visualizeMoire(0, spotColors[0], userGuessVisualCounter/userGuessMoveVisualLength);
+              // play audio
+            } else if (theGuess === spotCodes[1]) {
+              visualizeMoire(1, spotColors[1], userGuessVisualCounter/userGuessMoveVisualLength);
+              // play audio
+            } else if (theGuess === spotCodes[2]) {
+              visualizeMoire(2, spotColors[2], userGuessVisualCounter/userGuessMoveVisualLength);
+              // play audio
+            } else if (theGuess === spotCodes[3]) {
+              visualizeMoire(3, spotColors[3], userGuessVisualCounter/userGuessMoveVisualLength);
+              // play audio
+            }
+          } else { // User Guess visualization is over... Go to next move
+            userGuessVisualCounter = 0; // reset
+            currMoveCounter++;
+
+            // TODO: consider this logic.
+            // Reset move here, so that anything typed during the user_just_guessed_right is wipped
+            // Designed to prevent errant keystrokes or tweaky keystrokes or anything...
+            lastGuess = ''; 
+
+            if (currMoveCounter == computerMoves.length) { // guessing round complete!
+              console.log("adding a move");
+              computerMoves.push(chooseASpot());
+              memoryGameState = 'round_complete';
+              memoryGameDemoCounter = 0;
+              currMoveCounter = 0;
+            } else { // Not done guessing yet...
+              memoryGameState = 'user_guessing';
+            }
+        }
+    }
+      else if (memoryGameState == 'round_complete') { // Successful round! Challenge or congrats
+      roundCompleteCongratsCounter += (1 / theFrameRate * 1000);
+      console.log(roundCompleteCongratsCounter)
+
+      if (roundCompleteCongratsCounter < roundCompleteCongratsLength) {
+        visualizeRoundComplete(); // TODO spruce this up!!
+      } else {
+        roundCompleteCongratsCounter = 0;
+        memoryGameState = 'demo';
+      }
+    }
   } else if (currGameState == "user_lost") {
     background(200,100,30);
     textSize(32);
     text("Oops, you lose!!!!!!", windowWidth/6, windowHeight/3);
     text("Press z to play Speed, Press x to play Memory", windowWidth/6, windowHeight/2);
-  } else if (currGameState == 'hanging_out') {
-      background(140,40,200);
-      textSize(40);
-      text("Welcome!", windowWidth/6, windowHeight/3);
-      text("Press z to play Speed, Press x to play Memory", windowWidth/6, windowHeight/2);
   }
 }
+
+function visualizeMoire(quadrant, colors, timeCoeff) {
+  // Moire patterns for the positions
+  // quadrant is from 0-3
+  // colors is RGB array of length 3
+  // TODO: make this dynamic and have the time passed in which affects a fxn which is cursor
+  if (debug) {
+    console.log('visualizeMoire');
+  }
+
+  currentX = quadrant * windowWidth/4;
+  currentY = 0;
+
+  posX = windowWidth/8 + (quadrant * (windowWidth/4));
+  posY = timeCoeff * windowHeight; // Sweeps down screen
+  background(0,0,0,opacity); // clean up background
+  numLinesPerSide = 30;
+  
+  for (i = 0; i < numLinesPerSide; i+= 1) {
+    stroke(weightedRandom(colors[0],40,0,255),
+           weightedRandom(colors[1],40,0,255),
+           weightedRandom(colors[2],40,0,255));
+      
+    line(currentX, 0, posX, posY); // top of screen, follow cursor   
+    line(currentX, windowHeight, posX, posY); // bottom of screen, follow cursor
+    line(quadrant*windowWidth/4, currentY, posX, posY); // left side of screen, follow cursor
+    line((quadrant+1)*windowWidth/4, currentY, posX, posY); // right side of screen, follow cursor
+    
+    currentX += (windowWidth/4) / numLinesPerSide;
+    currentY += windowHeight / numLinesPerSide;
+  }
+
+  textSize(60);
+  text(spotCodes[quadrant], windowWidth/8 + (quadrant * (windowWidth/4)), windowHeight/3);
+}
+
+function visualizeRoundComplete() {
+  // TODO spruce this up
+  // TODO this doesn't work...
+  background(0);
+  textSize(40);
+  fill(random(0,255), random(0,255), random(0,255));
+  msg = "Awesome job! " + (computerMoves.length - 1) + "!!!! Adding a move :)"
+  text(msg, windowWidth/6, windowHeight/3);
+}
+
 
 // Play fun sounds in hurrr!!!
 function keyTyped() {
@@ -193,20 +252,12 @@ function keyTyped() {
       memoryGameDemoCounter = 0;
       currMoveCounter = 0;
     }
-  } else if (key === 'o') {
+  } else if (spotCodes.indexOf(key) > -1) { // if 'key' is in spotCodes
     lastGuess = key;
-    // play a sound?
-  } else if (key === 'p') {
-    lastGuess = key;
-    // play a sound?
-  } if (key === 'q') {
-    lastGuess = key;
-    // play a sound?
-  } if (key === 'v') {
-    lastGuess = key;
-    // play a sound?
+    // play a sound
   } else {
-    lastGuess = key;
+    //lastGuess = key;
+    // wtf key did you press?
   }
 }
 
@@ -226,3 +277,14 @@ function chooseASpot() {
 
 // *****************
 // UTILITY FUNCTIONS
+
+function weightedRandom(mean, stDev, min, max) {
+    num = randomGaussian(mean, stDev);
+    if (num < min) {
+      return min;
+    } else if (num > max) {
+      return max;
+    } else {
+      return num;
+    }
+  }
