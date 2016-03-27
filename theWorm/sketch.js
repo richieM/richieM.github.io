@@ -8,35 +8,33 @@ Remember Your Friends - Makeymakey Moire magic Speed / Memory collab make friend
 TODO:)
 
 - Keep it simple, stupid! <KISS>
-- [P0] Memory
-  - [P2[ Speed up demo when there's more moves, and like slow the pace down as it gets to the end...?
+- Memory
+  - [P2] Speed up demo when there's more moves, and like slow the pace down as it gets to the end...?
 - Overall
-  - Clear instructions
+  - [P0] Clear instructions!!
   - [P0] ** Developing a strong theme or aesthetic around the Game, and allowing that to influence
     the visual design decisions.
       - Connection...
-  - [P1] Home screen
-    - Leaderboards perhaps?
-  - [P0] Doper visualizations brainstorming...
-    - 4 Sketches for each station...?
-      - Moire
-      - Some bubbles thingy?
-      - Hearts / Love
-    - Visualizations when user is guessing can be Frame Difference or Line outline or both...
-    - During the area visualizations, what can I do with the rest of the black space thats more exciting?
-      Some sort of subtle line visualization or something, maybe Moire with like black grey lines or something...
-      Or camera stuff ... Frame difference!!!!
-    - Do I want a camera!?
-    - A background sketch for Memory mode when you're waiting to guess
-      - Something with camera? The Edge Detection sketch but fancied up?
-      - Bubbles floating around
-      - Lightning or something...
-    - A home screen visualization that could maybe just be cycling through the 4 station viz's
-  - [P0] Test with actual makey makey :)
-  - [P0] Every 3rd(??) guess, pause for an activity...
+      - [P0] What will the actual buttons be?
+  - Visualizations
+    - [P1] Make Moire pattern cooler...
+    - [P0] When User Is Guessing -- A background sketch for Memory mode when you're waiting to guess
+      - Something with camera? The Edge Detection / Frame Difference sketch but fancied up
+    - [P0] Home Screen / Waiting -- A home screen visualization that could maybe just be cycling through the 4 station viz's
+      - Leaderboard? Take a pic?
+    - Brain dump ...  Doper visualizations brainstorming...
+      - 4 Sketches for each station...?
+        - Moire
+        - Some bubbles thingy?
+        - Hearts / Love
+    
+  - [P0] Beginning flow, instructions and how you activate the game?
+  - [P0] Buy longer wire and actually test out
+  - [P0] Better activity prompts for every 3rd guess...
   - [P1] Reprogram makey makey for the buttons to not be o/p/q/v
   - [P0] Putting in basic sounds
   - [P1] Recording new sounds!
+  - Do a timeout???
 */
 
 // Debug
@@ -52,15 +50,10 @@ var currGameState = 'hanging_out'; // hanging_out, in_memory_game, user_lost
 // Visual vars
 var opacity = 30;
 
-// Speed game vars
-var speedGuessingTimeMillis;
-var millisSinceLastMove = 0;
-var hourGlassCoeff; // for draining visuals
-var lastGuess = '';
-
 // Memory mode variables
 var computerMoves = [];
 var memoryGameState; // demo, user_guessing, user_just_guessed_right, round_complete
+var lastGuess = '';
 
 var memoryGameDemoCounter;
 var demoMoveLength = 1000;
@@ -69,12 +62,18 @@ var userGuessVisualCounter = 0; // counter for showing user's guess
 var userGuessMoveVisualLength = demoMoveLength/2;
 
 var roundCompleteCongratsCounter = 0;
-var roundCompleteCongratsLength = demoMoveLength;
+var roundCompleteChallengeLength = 10000; // How long for the prompt?
 var currMoveCounter = 0;
+
+// Friendship questions
+var friendPrompts = ["Make up a secret handshake",
+                     "What's something you've never told your parents?",
+                     "What was the worst part of your day?",
+                     "What was the best part of your day?"];
+var currFriendPrompt = '';
 
 function setup() {
   createCanvas(windowWidth,windowHeight);
-  speedGuessingTimeMillis = 4000;
   theFrameRate = 40;
   strokeWeight(1);
   frameRate(theFrameRate);
@@ -173,13 +172,30 @@ function draw() {
     }
       else if (memoryGameState == 'round_complete') { // Successful round! Challenge or congrats
       roundCompleteCongratsCounter += (1 / theFrameRate * 1000);
-      console.log(roundCompleteCongratsCounter)
+      timeIsUp = false;
 
-      if (roundCompleteCongratsCounter < roundCompleteCongratsLength) {
-        visualizeRoundComplete(); // TODO spruce this up!!
+      if (currFriendPrompt.length == 0) {
+        currFriendPrompt = friendPrompts[Math.floor(random(0,friendPrompts.length))];
+      }
+
+      if (((computerMoves.length - 1) % 3) == 0) { // if every 3rd move
+        if (roundCompleteCongratsCounter < roundCompleteChallengeLength) {
+          visualizeRoundComplete(currFriendPrompt); // TODO spruce this up!!
+        } else {
+          timeIsUp = true;
+        }
       } else {
-        roundCompleteCongratsCounter = 0;
-        memoryGameState = 'demo';
+        if (roundCompleteCongratsCounter < demoMoveLength) {
+          visualizeRoundComplete('');
+        } else {
+          timeIsUp = true;
+        }
+      }
+
+      if (timeIsUp) {
+          roundCompleteCongratsCounter = 0;
+          memoryGameState = 'demo';
+          currFriendPrompt = '';
       }
     }
   } else if (currGameState == "user_lost") {
@@ -225,14 +241,22 @@ function visualizeMoire(quadrant, colors, timeCoeff) {
   text(spotCodes[quadrant], windowWidth/8 + (quadrant * (windowWidth/4)), windowHeight/3);
 }
 
-function visualizeRoundComplete() {
+function visualizeRoundComplete(friendShipPrompt) {
   // TODO spruce this up
   // TODO this doesn't work...
   background(0);
   textSize(40);
   fill(random(0,255), random(0,255), random(0,255));
-  msg = "Awesome job! " + (computerMoves.length - 1) + "!!!! Adding a move :)"
-  text(msg, windowWidth/6, windowHeight/3);
+  numMovesComplete = computerMoves.length -1;
+
+  if (friendShipPrompt.length > 0) {
+    console.log("in");
+    text(friendShipPrompt, windowWidth/6, windowHeight/3);
+  } else {
+    console.log('out');
+    msg = "Awesome job! " + (computerMoves.length - 1) + "!!!! Adding a move :)"
+    text(msg, windowWidth/6, windowHeight/3);
+  }
 }
 
 
