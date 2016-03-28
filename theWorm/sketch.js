@@ -9,6 +9,8 @@ Make this game / activities unique ...
 Separating this from any other game with the point to bomb wiht your teammate
 
 
+Decide if I am using a camera or not for the home screen, so that it can be unique from the explanation screen.  I think reading over audio for explanation will be good!
+
 Opening Text: - Remember Your Friends... - [Text on screen?] Grab a new
 [friend / stranger / cutie / date / parent], hold hands,    with one of you
 touching [the orange] and one of you touching [the apple]   (alternate text)
@@ -36,19 +38,26 @@ TODOS:
       - [P0] What will the actual buttons be?
 
   Different Screens:
-  - Home Screen
-  - Instructions -> First friendship prompt
-  - Demo screen
+  - **Home Screen
+    - Moire cycling
+  - ** Instructions -> First friendship prompt
+    - Screen where rules are read...
+       - Moire?
+    - Screen for first friendship prompt...
+      - Camera...
+  - Demo screen [DONE]
   - User guessing screens
-  - Partner activity screens
-  - Loser screen
+    - camera as background?
+  - ** Partner activity screens
+    - Camera as background?
+  - **Loser screen
+    - ??
 
   - [P1] Make Moire pattern cooler...
   - [P1] Get camera stuff working
     - When User Is Guessing -- A background sketch for Memory mode when you're waiting to guess
     - Something with camera? The Edge Detection / Frame Difference sketch but fancied up
-  - [P0] Home Screen / Waiting -- A home screen visualization that could maybe just be cycling through the 4 station viz's
-    - [P2] Leaderboard? Take a pic?
+  - [P2] Leaderboard? Take a pic?
   - Brain dump ...  Doper visualizations brainstorming...
     - 4 Sketches for each station...?
       - Moire
@@ -81,7 +90,7 @@ var theFrameRate = 40;
 var currGameState = 'hanging_out'; // hanging_out, in_memory_game, user_lost
 
 // Visual vars
-var opacity = 40;
+var opacity = 9;
 var w;
 var h;
 
@@ -90,12 +99,22 @@ var computerMoves = [];
 var memoryGameState; // demo, user_guessing, user_just_guessed_right, round_complete
 var lastGuess = '';
 
+// Home Screen
+var homeScreen = new Object();
+homeScreen.newMoire = true; // a bit hacky
+
+// Intro counters
+var introViz = new Object();
+
+// Demo counters
 var memoryGameDemoCounter;
 var demoMoveLength = 1000;
 
+// Guess counters
 var userGuessVisualCounter = 0; // counter for showing user's guess
 var userGuessMoveVisualLength = demoMoveLength/2;
 
+// Round complete counters
 var roundCompleteCongratsCounter = 0;
 var roundCompleteChallengeLength = 10000; // How long for the prompt?
 var currMoveCounter = 0;
@@ -119,6 +138,7 @@ function setup() {
   strokeWeight(1);
   frameRate(theFrameRate);
 
+  resetIntroVars();
   //cameraSetup();
 }
 
@@ -129,7 +149,18 @@ function draw() {
   if (currGameState == 'hanging_out') {
       visualizeHomeScreen();
   } else if (currGameState === "in_memory_game") {
-    if (memoryGameState === "demo") { // Demo moves to user
+    if (memoryGameState === "intro") {
+      introViz.moireCounter += (1 / theFrameRate * 1000);
+      console.log(introViz.moireCounter);
+      if (introViz.moireCounter < introViz.lengthOfTime) {
+        visualizeIntro(); // handle specific screens in here
+      } else {
+        resetIntroVars();
+
+        // Move to next game state
+        memoryGameState = "demo";
+      }
+    } else if (memoryGameState === "demo") { // Demo moves to user
       memoryGameDemoCounter += (1 / theFrameRate * 1000);
       console.log(memoryGameDemoCounter);
       if (memoryGameDemoCounter < demoMoveLength) {
@@ -210,8 +241,7 @@ function draw() {
               memoryGameState = 'user_guessing';
             }
         }
-    }
-      else if (memoryGameState == 'round_complete') { // Successful round! Challenge or congrats
+    } else if (memoryGameState == 'round_complete') { // Successful round! Challenge or congrats
       roundCompleteCongratsCounter += (1 / theFrameRate * 1000);
       timeIsUp = false;
 
@@ -247,13 +277,78 @@ function draw() {
 
 // ********************
 // VISUALIZATION SCREENS
-
 function visualizeHomeScreen() {
+  background(0,0,0,opacity);
+
+  if (homeScreen.newMoire) {
+    homeScreen.quadrant = Math.floor(random(0,4));
+    homeScreen.currMoireLength = weightedRandom(1, .3, .1, 2) * 1000;
+    homeScreen.timer = 0;
+    homeScreen.newMoire = false;
+
+    homeScreen.red = Math.floor(random(0,256));
+    homeScreen.green = Math.floor(random(0,256));
+    homeScreen.blue = Math.floor(random(0,256));
+
+
+    homeScreen.textR = weightedRandom(200,30,0,255);
+    homeScreen.textG = weightedRandom(200,30,0,255);
+    homeScreen.textB = weightedRandom(2000,30,0,255);
+  }
+
+  if (homeScreen.timer < homeScreen.currMoireLength) {
+    visualizeMoire(homeScreen.quadrant, [homeScreen.red, homeScreen.green, homeScreen.blue], homeScreen.timer/homeScreen.currMoireLength);
+    homeScreen.timer += (1 / theFrameRate * 1000);
+  } else {
+    homeScreen.newMoire = true;
+  }
+
   // TODO fix msg text
-  background(140,40,200);
+  // TODO this text looks hacky...
   textSize(60);
   msg = "Grab a new friend and hold hands, with one of you touching the <orange> and one of you touching the <banana>. (PRESS X)";
+  noStroke();
+  //fill(homeScreen.textR, homeScreen.textG, homeScreen.textB);
+  fill(255,255,255);
+  textFont('Verdana');
   text(msg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3);
+}
+
+function visualizeIntro() {
+
+
+  /*
+  <*WOOT*> Audio is being read:
+   - Awesome! Welcome to Remember Your Friends, a teamwork memory game.  Work as a team to remember the order of spots selected.
+
+   To play the game, form a human-chain like you just did, with one person's hand on the <orange> and one on your guess."
+
+- Before we get started, take 30 seconds and introduce yourself to your partner...
+- [Countdown timer sound thingy...]
+- Great, let's get started.  Remember to pay attention!
+  */
+  if (introViz.newMoire) {
+    introViz.quadrant += 1;
+    introViz.quadrant %= 4;
+
+    introViz.moireCounter = 0;
+    introViz.newMoire = false;
+  }
+
+  background(0,0,0,opacity);
+  if (introViz.moireCounter < introViz.moireLength) {
+    visualizeMoire(introViz.quadrant, spotColors[introViz.quadrant], introViz.moireCounter / introViz.moireLength);
+    introViz.moireCounter += (1 / theFrameRate * 1000);
+    console.log(introViz.moireCounter);
+    console.log("asdas");
+  } else {
+    introViz.newMoire = true;
+  }
+
+  textSize(60);
+  msg = "W00000t welcome";
+  text(msg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3)
+
 }
 
 function visualizeMoire(quadrant, colors, timeCoeff) {
@@ -261,6 +356,8 @@ function visualizeMoire(quadrant, colors, timeCoeff) {
   // quadrant is from 0-3
   // colors is RGB array of length 3
   // TODO: make this dynamic and have the time passed in which affects a fxn which is cursor
+  background(0,0,0,opacity);
+
   if (debug) {
     console.log('visualizeMoire');
   }
@@ -293,7 +390,6 @@ function visualizeMoire(quadrant, colors, timeCoeff) {
 
 function visualizeRoundComplete(friendShipPrompt) {
   // TODO spruce this up
-  // TODO this doesn't work...
   background(0);
   textSize(40);
   fill(random(0,255), random(0,255), random(0,255));
@@ -323,11 +419,18 @@ function visualizeUserLost(numMoves) {
 function keyTyped() {
   if (key === 'x') { // Let's play in_memory_game
     if (currGameState == "hanging_out" || currGameState == 'user_lost') {
-      computerMoves = [];
-
+      // Move to next game state
       currGameState = "in_memory_game";
+      memoryGameState = "intro";
+
+      // Reset for next game play...
+      homeScreen.newMoire = true;
+
+      // TODO This is for demo mode and game starting ... move this shit somewhere else?
+      // Possibly move to in 'intro' block...
+      // But to be fair, it works here :)
+      computerMoves = [];
       computerMoves.push(chooseASpot());
-      memoryGameState = "demo";
       memoryGameDemoCounter = 0;
       currMoveCounter = 0;
     }
@@ -376,4 +479,15 @@ function cameraSetup() {
   capture.size(w, h);
   capture.hide();
   buffer = new jsfeat.matrix_t(w, h, jsfeat.U8C1_t);
+}
+
+// *****************
+// Resetting stuff
+
+function resetIntroVars() {
+  introViz.lengthOfTime  = 40000;
+  introViz.moireCounter = 0;
+  introViz.moireLength = 2800;
+  introViz.newMoire = true;
+  introViz.quadrant = -1;
 }
