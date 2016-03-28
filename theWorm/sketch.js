@@ -142,7 +142,9 @@ function setup() {
 
   resetIntroVars();
   resetMoireVars();
-  //cameraSetup();
+  
+  // CAMERA STUFF
+  // cameraSetup();
 }
 
 // Main function
@@ -279,6 +281,7 @@ function draw() {
     // TODO maybe demo really fast what the correct answer was?
     visualizeUserLost(computerMoves.length);
   }
+  
 }
 
 // ********************
@@ -526,10 +529,12 @@ function weightedRandom(mean, stDev, min, max) {
 // CAMERA STUFF
 
 function cameraSetup() {
+  /*
   capture = createCapture(VIDEO);
   capture.size(w, h);
   capture.hide();
   buffer = new jsfeat.matrix_t(w, h, jsfeat.U8C1_t);
+  */
 }
 
 // *****************
