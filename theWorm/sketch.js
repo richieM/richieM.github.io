@@ -122,6 +122,8 @@ var moire = new Object();
 // Game over counter
 var userLost = new Object();
 
+var newUserGuessingRound = false;
+
 
 // Demo counters
 var memoryGameDemoCounter;
@@ -199,10 +201,11 @@ function draw() {
           memoryGameState = 'user_guessing';
           resetMoireVars();
           lastGuess = ''; // Clean the guess slate for any errant button presses
+          newUserGuessingRound = true;
         } 
       }
     } else if (memoryGameState == 'user_guessing') { // Time for user to guess
-      console.log('in user_guessing');
+      console.log("user guessing");
       if (lastGuess != '') { // If they just guessed...
         if (lastGuess === computerMoves[currMoveCounter]) {
           console.log('w00t! Good job:', lastGuess);
@@ -212,10 +215,22 @@ function draw() {
           currGameState = 'user_lost';
         }
       } else {
+        if (currMoveCounter == 0) {
+          if (newUserGuessingRound) {
+            fill(random(180,255),random(180,255),random(180,255));
+            newUserGuessingRound = false;
+          }
+          
+          textSize(40);
+          textFont('Verdana');
+          noStroke();
+          text("Your turn to guess!", windowWidth/3, windowHeight/3, 2*windowWidth/3, 2*windowHeight/3);
+        }
         // play a sound here the first time?
       }
     } else if (memoryGameState == 'user_just_guessed_right') {
       // Show what they just guessed...
+          newUserGuessingRound = true;
           userGuessVisualCounter += (1 / theFrameRate * 1000);
           console.log(userGuessVisualCounter);
 
@@ -286,10 +301,10 @@ function draw() {
     waitTime = friendPrompts[magicNum][0];
     
     // Hackily inject move length in there...
-    msg = "Oooo, incorrect! You got " + computerMoves.length + "moves though! Enjoy your new friend!";
+    msg = "Oooo, incorrect! Your team completed " + computerMoves.length + " moves though! Enjoy your new friend!";
     friendPrompts[magicNum][1] = [msg];
     
-    if (magicNum < waitTime) {
+    if (userLost.timer < waitTime) {
       visualizeTextPrompt(magicNum);
     } else {
       resetIntroVars();
@@ -389,16 +404,17 @@ function visualizeTextPrompt(moveNums) {
       allMsgs = friendPrompts["general"][1];
     }
     friendPrompts.currMsg = allMsgs[Math.floor(random(0,allMsgs.length))]; 
+    friendPrompts.currColor = color(random(180,256), random(180,256), random(180,256));
     resetMoireVars();
   }
 
   colors = [weightedRandom(30,10,0,60), weightedRandom(30,10,0,60), weightedRandom(30,10,0,60)];
   visualizeMoire(-1, colors);
-  fill(random(0,256), random(0,256), random(0,256));
+  fill(friendPrompts.currColor);
   textSize(60);
   textFont('Verdana');
   noStroke();
-  text(friendPrompts.currMsg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3);
+  text(friendPrompts.currMsg, windowWidth/4, windowHeight/4, windowWidth/2, windowHeight/2);
 }
 
 // TODO maybe only supply one point, and the other is a mirror?
@@ -591,7 +607,9 @@ function initializeFriendPrompts() {
 
   friendPrompts["general"] = [3000, ["Great job! Let's add another"]];
 
-  friendPrompts["-42"] = [5000, ["Good work though! Enjoy your new friend"]];
+  friendPrompts["-42"] = [6000, ["Good work though! Enjoy your new friend"]];
+  friendPrompts["userGuessing"] = [5000, ["Your turn to guess!"]];
+
 
   friendPrompts.currMsg;
   friendPrompts.currNumber = "-9"; // choose something invalid...
