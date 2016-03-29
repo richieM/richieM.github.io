@@ -6,10 +6,16 @@ Remember Your Friends - Makeymakey Moire magic Speed / Memory collab make friend
 
 /*
 INTRO WORDS:
+
+
+
 Make this game / activities unique ...
 Separating this from any other game with the point to bomb wiht your teammate
 
-Opening Text: - Remember Your Friends... - [Text on screen?] Grab a new
+Opening Text: 
+  msg = "Grab a new friend and hold hands, with one of you touching the <orange> and one of you touching the <banana>. (PRESS X)";
+
+- Remember Your Friends... - [Text on screen?] Grab a new
 [friend / stranger / cutie / date / parent], hold hands,    with one of you
 touching [the orange] and one of you touching [the apple]   (alternate text)
 and form a human chain from the <orange> to the <banana>
@@ -26,6 +32,22 @@ and form a human chain from the <orange> to the <banana>
 
 WORDS OF WISDOM:
 - Keep it simple, stupid...
+
+
+TODO / Ideas:
+- having the intro explanation be a Song :) ... I can always revert to text if need be
+  - just time box a 30 minute jingle
+- Figure out what the 5 objects are.  Color code them??
+- Focus on the Moire!
+  - Moire for friendship Prompts...
+  - Moire as background for when user is guessing
+  - Moire ideas to explore
+    - dark lines going in a circle, like a subtle Loading Icon
+    - Moire starting chill and eventually blowing up thats a symbol that the Friendship Prompt round is about over and you ened to pay attention.  Combine this with audio cues
+- Get some audio down!
+- Get the basic intro flow down...
+- More prompt ideas
+
 
 
 TODOS:
@@ -48,21 +70,12 @@ TODOS:
       - Countdown timer screen or something?
   - Demo screen [DONE]
   - User guessing screens
-    - camera as background?
+    - BACKGROUND MOIRE
   - ** Partner activity screens
-    - Camera as background?
+    - BACKGROUND MOIRE
   - **Loser screen
     - ??
 
-  - [P1] Get camera stuff working
-    - When User Is Guessing -- A background sketch for Memory mode when you're waiting to guess
-    - Something with camera? The Edge Detection / Frame Difference sketch but fancied up
-  - [P2] Leaderboard? Take a pic?
-  - Brain dump ...  Doper visualizations brainstorming...
-    - 4 Sketches for each station...?
-      - Moire
-      - Some bubbles thingy?
-      - Hearts / Love
   - [P2] Speed up demo when there's more moves, and like slow the pace down as it gets to the end...
   - [P0] Better activity prompts for every 3rd guess...
     - Or Maybe like 3rd, 5th, 7th ...?
@@ -106,6 +119,10 @@ var introViz = new Object();
 // Moire vars
 var moire = new Object();
 
+// Game over counter
+var userLost = new Object();
+
+
 // Demo counters
 var memoryGameDemoCounter;
 var demoMoveLength = 1000;
@@ -120,13 +137,7 @@ var roundCompleteChallengeLength = 10000; // How long for the prompt?
 var currMoveCounter = 0;
 
 // Friendship questions
-var friendPrompts = ["Make up a secret handshake",
-                     "What's something you've never told your parents?",
-                     "What was the worst part of your day?",
-                     "What was the best part of your day?"];
-
-var initialFriendPrompts = ["Learn your new friend's name!"];
-var currFriendPrompt = '';
+var friendPrompts = new Object();
 
 // Computer Vision stuff
 var capture;
@@ -142,9 +153,8 @@ function setup() {
 
   resetIntroVars();
   resetMoireVars();
-  
-  // CAMERA STUFF
-  // cameraSetup();
+  resetUserLostVars();
+  initializeFriendPrompts();
 }
 
 // Main function
@@ -187,6 +197,7 @@ function draw() {
         } else {
           currMoveCounter = 0;
           memoryGameState = 'user_guessing';
+          resetMoireVars();
           lastGuess = ''; // Clean the guess slate for any errant button presses
         } 
       }
@@ -199,12 +210,9 @@ function draw() {
         } else {
           console.log('Incorrect!', lastGuess);
           currGameState = 'user_lost';
-          
         }
       } else {
-        // TODO show something here...
-        // Maybe show camera visualizations here?
-        // Or at least say, your turn to guess...
+        // play a sound here the first time?
       }
     } else if (memoryGameState == 'user_just_guessed_right') {
       // Show what they just guessed...
@@ -216,16 +224,16 @@ function draw() {
 
           if (userGuessVisualCounter < userGuessMoveVisualLength) {
             if (theGuess === spotCodes[0]) {
-              visualizeMoire(0, spotColors[0], userGuessVisualCounter/userGuessMoveVisualLength);
+              visualizeMoire(0, spotColors[0]);
               // play audio
             } else if (theGuess === spotCodes[1]) {
-              visualizeMoire(1, spotColors[1], userGuessVisualCounter/userGuessMoveVisualLength);
+              visualizeMoire(1, spotColors[1]);
               // play audio
             } else if (theGuess === spotCodes[2]) {
-              visualizeMoire(2, spotColors[2], userGuessVisualCounter/userGuessMoveVisualLength);
+              visualizeMoire(2, spotColors[2]);
               // play audio
             } else if (theGuess === spotCodes[3]) {
-              visualizeMoire(3, spotColors[3], userGuessVisualCounter/userGuessMoveVisualLength);
+              visualizeMoire(3, spotColors[3]);
               // play audio
             }
           } else { // User Guess visualization is over... Go to next move
@@ -253,33 +261,42 @@ function draw() {
       roundCompleteCongratsCounter += (1 / theFrameRate * 1000);
       timeIsUp = false;
 
-      if (currFriendPrompt.length == 0) {
-        currFriendPrompt = friendPrompts[Math.floor(random(0,friendPrompts.length))];
-      }
-
-      if (((computerMoves.length - 1) % 3) == 0) { // if every 3rd move
-        if (roundCompleteCongratsCounter < roundCompleteChallengeLength) {
-          visualizeRoundComplete(currFriendPrompt); // TODO spruce this up!!
-        } else {
-          timeIsUp = true;
-        }
+      if (str(computerMoves.length - 1) in friendPrompts) {
+        waitTime = friendPrompts[str(computerMoves.length-1)][0];
       } else {
-        if (roundCompleteCongratsCounter < demoMoveLength) {
-          visualizeRoundComplete('');
-        } else {
-          timeIsUp = true;
-        }
+        waitTime = friendPrompts["general"][0];
       }
-
+      
+      if (roundCompleteCongratsCounter < waitTime) {
+        visualizeTextPrompt(str(computerMoves.length-1)); /// show a text prompt
+      } else {
+        timeIsUp = true;
+        resetMoireVars();
+      }
+      
       if (timeIsUp) {
           roundCompleteCongratsCounter = 0;
           memoryGameState = 'demo';
-          currFriendPrompt = '';
       }
     }
   } else if (currGameState == "user_lost") {
     // TODO maybe demo really fast what the correct answer was?
-    visualizeUserLost(computerMoves.length);
+    magicNum = "-42"
+    userLost.timer += (1 / theFrameRate * 1000);
+    waitTime = friendPrompts[magicNum][0];
+    
+    // Hackily inject move length in there...
+    msg = "Oooo, incorrect! You got " + computerMoves.length + "moves though! Enjoy your new friend!";
+    friendPrompts[magicNum][1] = [msg];
+    
+    if (magicNum < waitTime) {
+      visualizeTextPrompt(magicNum);
+    } else {
+      resetIntroVars();
+      resetMoireVars();
+      resetUserLostVars();
+      currGameState = "hanging_out";
+    }
   }
   
 }
@@ -304,21 +321,11 @@ function visualizeHomeScreen() {
   }
 
   if (homeScreen.timer < homeScreen.currMoireLength) {
-    visualizeMoire(homeScreen.quadrant, [homeScreen.red, homeScreen.green, homeScreen.blue], homeScreen.timer/homeScreen.currMoireLength);
+    visualizeMoire(homeScreen.quadrant, [homeScreen.red, homeScreen.green, homeScreen.blue]);
     homeScreen.timer += (1 / theFrameRate * 1000);
   } else {
     resetMoireVars();
   }
-
-  // TODO fix msg text
-  // TODO this text looks hacky...
-  textSize(60);
-  msg = "Grab a new friend and hold hands, with one of you touching the <orange> and one of you touching the <banana>. (PRESS X)";
-  noStroke();
-  //fill(homeScreen.textR, homeScreen.textG, homeScreen.textB);
-  fill(255,255,255);
-  textFont('Verdana');
-  text(msg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3);
 }
 
 function visualizeIntro() {
@@ -330,9 +337,9 @@ function visualizeIntro() {
 
    To play the game, form a human-chain like you just did, with one person's hand on the <orange> and one on your guess."
 
-- Before we get started, take 30 seconds and introduce yourself to your partner...
-- [Countdown timer sound thingy...]
-- Great, let's get started.  Remember to pay attention!
+    - Before we get started, take 30 seconds and introduce yourself to your partner...
+    - [Countdown timer sound thingy...]
+    - Great, let's get started.  Remember to pay attention!
   */
 
   // TODO possible secret hack here where if you hit a few keys, you can skip right to the game ;)
@@ -349,33 +356,49 @@ function visualizeIntro() {
 
     background(0,0,0,opacity);
     if (introViz.moireCounter < introViz.moireLength) {
-      visualizeMoire(introViz.quadrant, spotColors[introViz.quadrant], introViz.moireCounter / introViz.moireLength);
+      visualizeMoire(introViz.quadrant, spotColors[introViz.quadrant]);
       introViz.moireCounter += (1 / theFrameRate * 1000);
     } else {
       resetMoireVars();
     }
 
+    /*
     textSize(60);
     msg = "W00000t welcome";
     text(msg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3)
+    */
     }
   else if (introViz.overallCounter < 13000) { // TODO lengthen
-    if (introViz.newFriendPrompt.length == 0) {
-      introViz.newFriendPrompt = initialFriendPrompts[Math.floor(random(0,initialFriendPrompts.length))];
-    }
-    visualizeTextPrompt(introViz.newFriendPrompt);
+    visualizeTextPrompt(-1);
   } else { // let' get ready to play
-    visualizeTextPrompt("Great, let's get started. Remember to pay attention");
+    visualizeTextPrompt(0);
   }
 }
 
-function visualizeTextPrompt(friendshipPrompt) {
-  // TODO maybe audio triggers here with time...
+function visualizeTextPrompt(moveNums) {
+  // TODO maybe audio triggers here with time...)
+  
+  moveNums = str(moveNums);
+
+  // New prompt
+  if (moveNums != friendPrompts.currNumber) {
+    friendPrompts.currNumber = moveNums;
+    if (moveNums in friendPrompts) {
+      allMsgs = friendPrompts[moveNums][1]; // TODO convert to string
+    } else {
+      allMsgs = friendPrompts["general"][1];
+    }
+    friendPrompts.currMsg = allMsgs[Math.floor(random(0,allMsgs.length))]; 
+    resetMoireVars();
+  }
+
+  colors = [weightedRandom(30,10,0,60), weightedRandom(30,10,0,60), weightedRandom(30,10,0,60)];
+  visualizeMoire(-1, colors);
   fill(random(0,256), random(0,256), random(0,256));
   textSize(60);
   textFont('Verdana');
   noStroke();
-  text(friendshipPrompt, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3)
+  text(friendPrompts.currMsg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3);
 }
 
 // TODO maybe only supply one point, and the other is a mirror?
@@ -388,16 +411,28 @@ function visualizeMoire(quadrant, colors) {
     //moire.points.push(new MoirePoint(quadrant));
   }
 
+  if (quadrant == -1) { // use the whole screen
+    minX = 0;
+    maxX = windowWidth;
+    width = maxX - minX;
+    numLinesPerSide = 10;
+  } else { // actually pick a quadrant
+    minX = quadrant * windowWidth / 4;
+    maxX = (quadrant + 1) * windowWidth / 4;
+    width = maxX - minX;
+    numLinesPerSide = 20;
+  }
+
   background(0,0,0,opacity);
 
   for (m = 0; m < moire.points.length; m++) {
     moire.points[m].move();
 
-    currentX = quadrant * windowWidth/4;
+    currentX = minX;
     currentY = 0;
 
     background(0,0,0,opacity); // clean up background
-    numLinesPerSide = 20;
+    
     
     for (i = 0; i < numLinesPerSide; i+= 1) {
       stroke(weightedRandom(colors[0],40,0,255),
@@ -405,60 +440,34 @@ function visualizeMoire(quadrant, colors) {
              weightedRandom(colors[2],40,0,255));
         
       line(currentX, 0, moire.points[m].x, moire.points[m].y); // top of screen
-      line(currentX, 0, 
-          map(moire.points[m].x, quadrant*windowWidth/4, (quadrant+1)*windowWidth/4, (quadrant+1)*windowWidth/4, quadrant*windowWidth/4),
+      line(currentX, 0, map(moire.points[m].x, minX, maxX, maxX, minX),
           map(moire.points[m].y, 0, windowHeight, windowHeight, 0)); // top of screen, flipped
 
       line(currentX, windowHeight, moire.points[m].x, moire.points[m].y); // bottom of screen
-      line(currentX, windowHeight,
-          map(moire.points[m].x, quadrant*windowWidth/4, (quadrant+1)*windowWidth/4, (quadrant+1)*windowWidth/4, quadrant*windowWidth/4),
+      line(currentX, windowHeight, map(moire.points[m].x, minX, maxX, maxX, minX),
           map(moire.points[m].y, 0, windowHeight, windowHeight, 0)); // bottom of screen, flipped;
 
-      line(quadrant*windowWidth/4, currentY, moire.points[m].x, moire.points[m].y); // left side of screen
-      line(quadrant*windowWidth/4, currentY, 
-          map(moire.points[m].x, quadrant*windowWidth/4, (quadrant+1)*windowWidth/4, (quadrant+1)*windowWidth/4, quadrant*windowWidth/4),
+      line(minX, currentY, moire.points[m].x, moire.points[m].y); // left side of screen
+      line(minX, currentY, map(moire.points[m].x, minX, maxX, maxX, minX),
           map(moire.points[m].y, 0, windowHeight, windowHeight, 0)); // left side of screen, flipped
 
-      line((quadrant+1)*windowWidth/4, currentY, moire.points[m].x, moire.points[m].y); // right side of screen
-      line((quadrant+1)*windowWidth/4, currentY,
-          map(moire.points[m].x, quadrant*windowWidth/4, (quadrant+1)*windowWidth/4, (quadrant+1)*windowWidth/4, quadrant*windowWidth/4),
+      line(maxX, currentY, moire.points[m].x, moire.points[m].y); // right side of screen
+      line(maxX, currentY, map(moire.points[m].x, minX, maxX, maxX, minX),
           map(moire.points[m].y, 0, windowHeight, windowHeight, 0)); // right side of screen, flipped
       
-      currentX += (windowWidth/4) / numLinesPerSide;
+      currentX += width / numLinesPerSide;
       currentY += windowHeight / numLinesPerSide;
     }
   }
 
-  textSize(60);
-  text(spotCodes[quadrant], windowWidth/8 + (quadrant * (windowWidth/4)), windowHeight/3);
-}
-
-function visualizeRoundComplete(friendShipPrompt) {
-  // TODO spruce this up
-  background(0);
-  textSize(40);
-  fill(random(0,255), random(0,255), random(0,255));
-  numMovesComplete = computerMoves.length -1;
-
-  if (friendShipPrompt.length > 0) {
-    console.log("in");
-    text(friendShipPrompt, windowWidth/6, windowHeight/3);
-  } else {
-    console.log('out');
-    msg = "Awesome job! " + (computerMoves.length - 1) + "!!!! Adding a move :)"
-    text(msg, windowWidth/6, windowHeight/3);
+  // TODO letters showing code...
+  /*
+  if (quadrant != -1) {
+    textSize(60);
+    text(spotCodes[quadrant], windowWidth/8 + (minX), windowHeight/3);
   }
+  */
 }
-
-function visualizeUserLost(numMoves) {
-    background(200,100,30);
-    textSize(32);
-    msg = ""
-    text("Oops, wrong guess!", windowWidth/6, windowHeight/3);
-    text("You and your friend made " + numMoves + " moves!", windowWidth/6, 2*windowHeight/5);
-    text("Press x to play Memory", windowWidth/6, windowHeight/2);
-}
-
 
 // Play fun sounds in hurrr!!!
 function keyTyped() {
@@ -526,18 +535,6 @@ function weightedRandom(mean, stDev, min, max) {
   }
 
 // *****************
-// CAMERA STUFF
-
-function cameraSetup() {
-  /*
-  capture = createCapture(VIDEO);
-  capture.size(w, h);
-  capture.hide();
-  buffer = new jsfeat.matrix_t(w, h, jsfeat.U8C1_t);
-  */
-}
-
-// *****************
 // Resetting stuff
 
 function resetIntroVars() {
@@ -547,10 +544,55 @@ function resetIntroVars() {
   introViz.moireCounter = 0;
   introViz.moireLength = 2000;
   introViz.quadrant = -1;
-
-  introViz.newFriendPrompt = "";
 }
 
 function resetMoireVars() {
   moire.points = [];
+}
+
+function resetFriendPromptVars() {
+  promptVar.msg = "";
+}
+
+function resetUserLostVars() {
+  userLost.timer = 0;
+}
+
+function initializeFriendPrompts() {
+  
+  // Initial icebreaker
+  friendPrompts["-1"] = [30000, ["Learn your new friend's name!"]];
+
+  // Initial icebreaker
+  friendPrompts["0"] = [3000, ["Great, let's get started. Remember to pay attention."]];
+  
+  // Good job, let's keep going
+  friendPrompts["1"] = [3000, ["Great job! Let's add another"]];
+  
+  // First break ...
+  friendPrompts["3"] = [35000, ["Make up a secret handshake",
+                                 "Make up a synchronized dance",
+                                 "Find out the best part of your friend's day",
+                                  "Find out the worst part of your friend's day"]];
+  // Emotional
+  friendPrompts["6"] = [35000, ["What's something your parents don't know about you?",
+                                "What's something your best friend doesn't know about you?",
+                                "Have you ever been in love?"]];
+
+  spiritualPsychological = ["Do you believe in God?",
+                            "What is the meaning of life?"];
+
+  // Spiritual / Psychological
+  friendPrompts["9"] = [35000, spiritualPsychological];
+  friendPrompts["12"] = [35000, spiritualPsychological];
+  friendPrompts["15"] = [35000, spiritualPsychological];
+  friendPrompts["18"] = [35000, spiritualPsychological];
+  friendPrompts["21"] = [35000, spiritualPsychological];
+
+  friendPrompts["general"] = [3000, ["Great job! Let's add another"]];
+
+  friendPrompts["-42"] = [5000, ["Good work though! Enjoy your new friend"]];
+
+  friendPrompts.currMsg;
+  friendPrompts.currNumber = "-9"; // choose something invalid...
 }

@@ -11,9 +11,16 @@ Inspired by richiem.github.io/bubbles
 
 function MoirePoint(quadrant) {
 	this.quadrant = quadrant;
-	this.width = windowWidth/4;
-	this.leftX = this.quadrant * this.width;
-	this.rightX = (this.quadrant + 1) * this.width;
+	
+	if (this.quadrant < 0) {
+		this.leftX = 0;
+		this.rightX = windowWidth;
+		this.width = windowWidth;
+	} else {
+		this.width = windowWidth/4;
+		this.leftX = this.quadrant * this.width;
+		this.rightX = (this.quadrant + 1) * this.width;
+	}
 	
 	this.x = weightedRandom(floor(this.leftX + this.width),floor(this.width/2),this.leftX,this.rightX);
 	this.y = weightedRandom(floor(windowHeight/2),floor(windowHeight/6),0,windowHeight);
