@@ -7,10 +7,34 @@ Remember Your Friends - Makeymakey Moire magic Speed / Memory collab make friend
 /*
 INTRO WORDS:
 
+new friend
+Or a stranger
+Or your partner or your mom
+or your neighbor
 
+Now hold your friend's hand
+and form a human chain
+from the orangeeeee
+to the lemon
+
+So hold their hand,
+And put your other on the orangeeee
+while their other hand
+is on the lemon. Grab a 
+
+and form a human chain from the orangeeee to the lemon
+While you're holding 
 
 Make this game / activities unique ...
 Separating this from any other game with the point to bomb wiht your teammate
+
+Grab a new friend
+Or a stranger
+Or your partner or your mom or your neighbor
+Now hold your friend's hand
+
+and form a human chain from the orangeeee to the lemon
+While you're holding 
 
 Opening Text: 
   msg = "Grab a new friend and hold hands, with one of you touching the <orange> and one of you touching the <banana>. (PRESS X)";
@@ -20,10 +44,22 @@ Opening Text:
 touching [the orange] and one of you touching [the apple]   (alternate text)
 and form a human chain from the <orange> to the <banana>
 
-- <Woot!!> [Audio with some text] Great job! Remember Your Friends is a teamwork memory game.  You'll see a series of choices 
-  which you'll need to guess in order.  Always for a human-chain from the <orange> to the next item on the screen...
+- <Woot!!> [Audio with some text] 
+  Woo! Great job!
 
-- Before we get started, take 30 seconds and introduce yourself to your partner...
+  You and your partner are about to play a teamwork memory game.
+  In front of you you'll see four objects in front of Red / Green / Blue / Yellow visualizations.
+  You need to work as a team to remember the order of the items.  To guess, hold hands like you just did to connect the Orange to your guess .
+  
+  Before we get started, take 20 seconds and introduce yourself to your partner...
+
+  -----
+
+  The first round will just be one item,
+  and each round will add another item.
+
+
+  Great. Let's get started.  Remember to pay attention.
 - [Countdown timer sound thingy...]
 - Great, let's get started.  Remember to pay attention!
 - [Flash selection]
@@ -51,10 +87,27 @@ TODO / Ideas:
 
 
 TODOS:
-  - Audio
-    - Intro song w theme...
-    - Celebration sound and original voice over
-    -
+
+Sounds:
+  Try to do the Audio in 2 hours -- 8:30am-11am, just get shit down...
+  It doesn't need to be perfect. Just focus on CLARITY
+  I can re-use my own music and stuff...
+  Just be cranking and making stuff.
+
+  I only need to pick like 4 different songs.
+  ** Include the countdown stuff and prompts at the end of the actual songs
+
+   I can use samples of my own stuff, or Cluster, or whatever...
+  Focus on the vibe it makes. Focus on Connection...
+
+  VisualizeHomeScreen
+  Theme song playing in background
+  VisualizeIntro
+  “Bloop!” Celebration sound -> Welcome overdub…
+  Countdown timer stuff too, or like HEY, PAY ATTENTION!
+
+  Attach the sounds as a first value in the friendPrompts arrays...
+
 
   - [P0] Clear instructions!!
     - ** Beginning flow, instructions and how you activate the game?
@@ -83,7 +136,14 @@ TODOS:
     - [P1] Reprogram makey makey for the buttons to not be o/p/q/v
     - [P1] Recording new sounds!
     - [P0] Making sure speakers work / getting a new speaker wire
-    - [P1] Can I get P5 working with a webcam?!
+
+Stuff to bring to Grey Area
+- Projector
+- Speakers
+- RCA wire from stereo w extension cord
+- laptop :)
+- makey makey
+- (buy) wire?
 */
 
 // Debug
@@ -121,7 +181,6 @@ var userLost = new Object();
 
 var newUserGuessingRound = false;
 
-
 // Demo counters
 var memoryGameDemoCounter;
 var demoMoveLength = 1000;
@@ -131,7 +190,7 @@ var userGuessVisualCounter = 0; // counter for showing user's guess
 var userGuessMoveVisualLength = demoMoveLength/2;
 
 // Round complete counters
-var roundCompleteCongratsCounter = 0;
+var roundCompleteStartTime = 0;
 var roundCompleteChallengeLength = 10000; // How long for the prompt?
 var currMoveCounter = 0;
 
@@ -147,7 +206,18 @@ var result;
 var sounds =  new Object();
 
 function preload() {
-  sounds['home'] = loadSound("audio/spooky_green_light.wav");
+  sounds["home"] = loadSound("audio/home_theme.wav");
+  sounds["intro"] = loadSound("audio/intro.wav");
+  sounds["prompt"] = loadSound("audio/prompt.wav");
+  sounds["trumpet"] = loadSound("audio/trumpet.wav");
+  sounds["cool"] = loadSound("audio/cool_lets_add_1.wav");
+
+  sounds["clap"] = loadSound("audio/clap.wav");
+  sounds["cymbal"] = loadSound("audio/cymbal.wav");
+  sounds["snap"] = loadSound("audio/snap.wav");
+  sounds["snare"] = loadSound("audio/snare.wav");
+
+  sounds["lose"] = loadSound("audio/trumpet_lose.wav");
   // sounds['excited'] = 
   // sounds['intro_voiceover']
 }
@@ -173,8 +243,12 @@ function draw() {
       visualizeHomeScreen();
   } else if (currGameState === "in_memory_game") {
     if (memoryGameState === "intro") {
-      introViz.overallCounter += (1 / theFrameRate * 1000);
-      if (introViz.overallCounter < introViz.lengthOfTime) {
+      if (introViz.justStarted) {
+        sounds["intro"].play();
+        introViz.justStarted = false;
+      }
+
+      if (((new Date()) - introViz.startTime) < introViz.lengthOfTime) {
         visualizeIntro(); // handle specific screens in here
       } else {
         resetIntroVars();
@@ -189,13 +263,13 @@ function draw() {
       if (memoryGameDemoCounter < demoMoveLength) {
         currMove = computerMoves[currMoveCounter];
         if (currMove === spotCodes[0]) {
-          visualizeMoire(0, spotColors[0]);
+          visualizeMoire(0, spotColors[0], sounds["clap"]);
         } else if (currMove === spotCodes[1]) {
-          visualizeMoire(1, spotColors[1]);
+          visualizeMoire(1, spotColors[1], sounds["cymbal"]);
         } else if (currMove === spotCodes[2]) {
-          visualizeMoire(2, spotColors[2]);
+          visualizeMoire(2, spotColors[2], sounds["snap"]);
         } else if (currMove === spotCodes[3]) {
-          visualizeMoire(3, spotColors[3]);
+          visualizeMoire(3, spotColors[3], sounds["snare"]);
         }
       } else { // Current move demo is done, go to next move
         currMoveCounter++;
@@ -245,16 +319,16 @@ function draw() {
 
           if (userGuessVisualCounter < userGuessMoveVisualLength) {
             if (theGuess === spotCodes[0]) {
-              visualizeMoire(0, spotColors[0]);
+              visualizeMoire(0, spotColors[0], sounds["clap"]);
               // play audio
             } else if (theGuess === spotCodes[1]) {
-              visualizeMoire(1, spotColors[1]);
+              visualizeMoire(1, spotColors[1], sounds["cymbal"]);
               // play audio
             } else if (theGuess === spotCodes[2]) {
-              visualizeMoire(2, spotColors[2]);
+              visualizeMoire(2, spotColors[2], sounds["snap"]);
               // play audio
             } else if (theGuess === spotCodes[3]) {
-              visualizeMoire(3, spotColors[3]);
+              visualizeMoire(3, spotColors[3], sounds["snare"]);
               // play audio
             }
           } else { // User Guess visualization is over... Go to next move
@@ -274,12 +348,12 @@ function draw() {
               memoryGameState = 'round_complete';
               memoryGameDemoCounter = 0;
               currMoveCounter = 0;
+              roundCompleteStartTime = new Date();
             } else { // Not done guessing yet...
               memoryGameState = 'user_guessing';
             }
         }
     } else if (memoryGameState == 'round_complete') { // Successful round! Challenge or congrats
-      roundCompleteCongratsCounter += (1 / theFrameRate * 1000);
       timeIsUp = false;
 
       if (str(computerMoves.length - 1) in friendPrompts) {
@@ -288,7 +362,7 @@ function draw() {
         waitTime = friendPrompts["general"][0];
       }
       
-      if (roundCompleteCongratsCounter < waitTime) {
+      if (((new Date()) - roundCompleteStartTime) < waitTime) {
         visualizeTextPrompt(str(computerMoves.length-1)); /// show a text prompt
       } else {
         timeIsUp = true;
@@ -296,7 +370,6 @@ function draw() {
       }
       
       if (timeIsUp) {
-          roundCompleteCongratsCounter = 0;
           memoryGameState = 'demo';
       }
     }
@@ -307,7 +380,7 @@ function draw() {
     waitTime = friendPrompts[magicNum][0];
     
     // Hackily inject move length in there...
-    msg = "Oooo, incorrect! Your team completed " + computerMoves.length + " moves though! Enjoy your new friend!";
+    msg = "Oooo, incorrect! Your team completed " + (computerMoves.length-1) + " moves though! Enjoy your new friend!";
     friendPrompts[magicNum][1] = [msg];
     
     if (userLost.timer < waitTime) {
@@ -369,7 +442,7 @@ function visualizeIntro() {
   */
 
   // TODO possible secret hack here where if you hit a few keys, you can skip right to the game ;)
-  if (introViz.overallCounter < 8000) { // TODO lengthen to ... 15000?
+  if (((new Date()) - introViz.startTime) < 23000) {
     // Moire stuff with voice overdubs
     // TODO audio cues...
 
@@ -387,14 +460,14 @@ function visualizeIntro() {
     } else {
       resetMoireVars();
     }
-    
+
     /*
     textSize(60);
     msg = "W00000t welcome";
     text(msg, windowWidth/6, windowHeight/6, 2*windowWidth/3, 2*windowHeight/3)
     */
     }
-  else if (introViz.overallCounter < 13000) { // TODO lengthen
+  else if (((new Date()) - introViz.startTime) < 41000) { // TODO lengthen
     visualizeTextPrompt(-1);
   } else { // let' get ready to play
     visualizeTextPrompt(0);
@@ -411,8 +484,16 @@ function visualizeTextPrompt(moveNums) {
     friendPrompts.currNumber = moveNums;
     if (moveNums in friendPrompts) {
       allMsgs = friendPrompts[moveNums][1]; // TODO convert to string
+
+      // play audio
+      if (friendPrompts[moveNums].length == 3) {
+        friendPrompts[moveNums][2].play();
+      }
     } else {
       allMsgs = friendPrompts["general"][1];
+
+      // play audio
+      friendPrompts["general"][2].play();
     }
     friendPrompts.currMsg = allMsgs[Math.floor(random(0,allMsgs.length))]; 
     friendPrompts.currColor = color(random(180,256), random(180,256), random(180,256));
@@ -422,19 +503,22 @@ function visualizeTextPrompt(moveNums) {
   colors = [weightedRandom(30,10,0,60), weightedRandom(30,10,0,60), weightedRandom(30,10,0,60)];
   visualizeMoire(-1, colors);
   fill(friendPrompts.currColor);
-  textSize(60);
+  textSize(50);
   textFont('Verdana');
   noStroke();
   text(friendPrompts.currMsg, windowWidth/4, windowHeight/4, windowWidth/2, windowHeight/2);
 }
 
 // TODO maybe only supply one point, and the other is a mirror?
-function visualizeMoire(quadrant, colors) {
+function visualizeMoire(quadrant, colors, song) {
   // Moire patterns for the positions
   // quadrant is from 0-3
   // colors is RGB array of length 3
   if (moire.points.length == 0) {
     moire.points.push(new MoirePoint(quadrant));
+    if (song) {
+      song.play();
+    }
     //moire.points.push(new MoirePoint(quadrant));
   }
 
@@ -508,6 +592,7 @@ function keyTyped() {
       // Reset for next game play...
       resetMoireVars();
       resetHomeScreenVars();
+      resetIntroVars();
 
       // TODO This is for demo mode and game starting ... move this shit somewhere else?
       // Possibly move to in 'intro' block...
@@ -567,8 +652,9 @@ function weightedRandom(mean, stDev, min, max) {
 // Resetting stuff
 
 function resetIntroVars() {
-  introViz.lengthOfTime  = 15000;
-  introViz.overallCounter = 0;
+  introViz.lengthOfTime  = 48000;
+  introViz.startTime = new Date();
+  introViz.justStarted = true;
 
   introViz.moireCounter = 0;
   introViz.moireLength = 2000;
@@ -593,34 +679,34 @@ function initializeFriendPrompts() {
   friendPrompts["-1"] = [30000, ["Learn your new friend's name!"]];
 
   // Initial icebreaker
-  friendPrompts["0"] = [3000, ["Great, let's get started. Remember to pay attention."]];
+  friendPrompts["0"] = [3000, ["Great, let's get started."]];
   
   // Good job, let's keep going
-  friendPrompts["1"] = [3000, ["Great job! Let's add another"]];
+  friendPrompts["1"] = [5000, ["Great job! Let's add another"], sounds["cool"]];
   
   // First break ...
-  friendPrompts["3"] = [35000, ["Make up a secret handshake",
+  friendPrompts["3"] = [38000, ["Make up a secret handshake",
                                  "Make up a synchronized dance",
                                  "Find out the best part of your friend's day",
-                                  "Find out the worst part of your friend's day"]];
+                                  "Find out the worst part of your friend's day"], sounds["prompt"]];
   // Emotional
-  friendPrompts["6"] = [35000, ["What's something your parents don't know about you?",
+  friendPrompts["6"] = [38000, ["What's something your parents don't know about you?",
                                 "What's something your best friend doesn't know about you?",
-                                "Have you ever been in love?"]];
+                                "Have you ever been in love?"], sounds["prompt"]];
 
-  spiritualPsychological = ["Do you believe in God?",
-                            "What is the meaning of life?"];
+  spiritualPsychological = ["Do you believe in a god?",
+                            "What do you think is the meaning of life?"];
 
   // Spiritual / Psychological
-  friendPrompts["9"] = [35000, spiritualPsychological];
-  friendPrompts["12"] = [35000, spiritualPsychological];
-  friendPrompts["15"] = [35000, spiritualPsychological];
-  friendPrompts["18"] = [35000, spiritualPsychological];
-  friendPrompts["21"] = [35000, spiritualPsychological];
+  friendPrompts["9"] =  [38000, spiritualPsychological, sounds["prompt"]];
+  friendPrompts["12"] = [38000, spiritualPsychological, sounds["prompt"]];
+  friendPrompts["15"] = [38000, spiritualPsychological, sounds["prompt"]];
+  friendPrompts["18"] = [38000, spiritualPsychological, sounds["prompt"]];
+  friendPrompts["21"] = [38000, spiritualPsychological, sounds["prompt"]];
 
-  friendPrompts["general"] = [3000, ["Great job! Let's add another"]];
+  friendPrompts["general"] = [3000, ["Great job! Let's add another"], sounds["trumpet"]];
 
-  friendPrompts["-42"] = [6000, ["Good work though! Enjoy your new friend"]];
+  friendPrompts["-42"] = [6000, ["Good work though! Enjoy your new friend"], sounds["lose"]];
   friendPrompts["userGuessing"] = [5000, ["Your turn to guess!"]];
 
 
