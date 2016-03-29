@@ -51,6 +51,11 @@ TODO / Ideas:
 
 
 TODOS:
+  - Audio
+    - Intro song w theme...
+    - Celebration sound and original voice over
+    -
+
   - [P0] Clear instructions!!
     - ** Beginning flow, instructions and how you activate the game?
   - [P0] ** Developing a strong theme or aesthetic around the Game, and allowing that to influence
@@ -60,19 +65,10 @@ TODOS:
 
   Different Screens:
   - **Home Screen
-    - TODO fix the text, it looks janky
   - ** Instructions -> First friendship prompt
-    - Screen where rules are read...
-       - Moire?
-    - Screen for first friendship prompt...
-      - Camera...??
-      - What can I do that's not Camera, a chill Moire?
-      - Countdown timer screen or something?
   - Demo screen [DONE]
   - User guessing screens
-    - BACKGROUND MOIRE
   - ** Partner activity screens
-    - BACKGROUND MOIRE
   - **Loser screen
     - ??
 
@@ -112,6 +108,7 @@ var lastGuess = '';
 
 // Home Screen
 var homeScreen = new Object();
+homeScreen.firstTime = true;
 
 // Intro counters
 var introViz = new Object();
@@ -145,6 +142,15 @@ var friendPrompts = new Object();
 var capture;
 var buffer;
 var result;
+
+// Sound stuff
+var sounds =  new Object();
+
+function preload() {
+  sounds['home'] = loadSound("audio/spooky_green_light.wav");
+  // sounds['excited'] = 
+  // sounds['intro_voiceover']
+}
 
 function setup() {
   w = windowWidth;
@@ -319,6 +325,11 @@ function draw() {
 // ********************
 // VISUALIZATION SCREENS
 function visualizeHomeScreen() {
+  if (homeScreen.firstTime) {
+    // play sound;
+    homeScreen.firstTime = false;
+    sounds['home'].loop();
+  }
   background(0,0,0,opacity);
 
   if (moire.points.length == 0) {
@@ -376,7 +387,7 @@ function visualizeIntro() {
     } else {
       resetMoireVars();
     }
-
+    
     /*
     textSize(60);
     msg = "W00000t welcome";
@@ -489,12 +500,14 @@ function visualizeMoire(quadrant, colors) {
 function keyTyped() {
   if (key === 'x') { // Let's play in_memory_game
     if (currGameState == "hanging_out" || currGameState == 'user_lost') {
+      
       // Move to next game state
       currGameState = "in_memory_game";
       memoryGameState = "intro";
 
       // Reset for next game play...
       resetMoireVars();
+      resetHomeScreenVars();
 
       // TODO This is for demo mode and game starting ... move this shit somewhere else?
       // Possibly move to in 'intro' block...
@@ -613,4 +626,9 @@ function initializeFriendPrompts() {
 
   friendPrompts.currMsg;
   friendPrompts.currNumber = "-9"; // choose something invalid...
+}
+
+function resetHomeScreenVars() {
+  homeScreen.firstTime = true;
+  sounds['home'].stop();
 }
