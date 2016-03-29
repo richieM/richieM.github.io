@@ -5,136 +5,25 @@ Remember Your Friends - Makeymakey Moire magic Speed / Memory collab make friend
 */
 
 /*
-INTRO WORDS:
-
-new friend
-Or a stranger
-Or your partner or your mom
-or your neighbor
-
-Now hold your friend's hand
-and form a human chain
-from the orangeeeee
-to the lemon
-
-So hold their hand,
-And put your other on the orangeeee
-while their other hand
-is on the lemon. Grab a 
-
-and form a human chain from the orangeeee to the lemon
-While you're holding 
-
-Make this game / activities unique ...
-Separating this from any other game with the point to bomb wiht your teammate
-
-Grab a new friend
-Or a stranger
-Or your partner or your mom or your neighbor
-Now hold your friend's hand
-
-and form a human chain from the orangeeee to the lemon
-While you're holding 
-
-Opening Text: 
-  msg = "Grab a new friend and hold hands, with one of you touching the <orange> and one of you touching the <banana>. (PRESS X)";
-
-- Remember Your Friends... - [Text on screen?] Grab a new
-[friend / stranger / cutie / date / parent], hold hands,    with one of you
-touching [the orange] and one of you touching [the apple]   (alternate text)
-and form a human chain from the <orange> to the <banana>
-
-- <Woot!!> [Audio with some text] 
-  Woo! Great job!
-
-  You and your partner are about to play a teamwork memory game.
-  In front of you you'll see four objects in front of Red / Green / Blue / Yellow visualizations.
-  You need to work as a team to remember the order of the items.  To guess, hold hands like you just did to connect the Orange to your guess .
-  
-  Before we get started, take 20 seconds and introduce yourself to your partner...
-
-  -----
-
-  The first round will just be one item,
-  and each round will add another item.
-
-
-  Great. Let's get started.  Remember to pay attention.
-- [Countdown timer sound thingy...]
-- Great, let's get started.  Remember to pay attention!
-- [Flash selection]
-- [Special First Round instructions] ... Form a human chain with your partner from the orange to the item that was shown.
-- !!!WOOOOOTT!!! AWESOME JOB. So you can remember one, let's add another, be sure to remember the order...
-
 WORDS OF WISDOM:
 - Keep it simple, stupid...
 
 
 TODO / Ideas:
-- having the intro explanation be a Song :) ... I can always revert to text if need be
-  - just time box a 30 minute jingle
 - Figure out what the 5 objects are.  Color code them??
-- Focus on the Moire!
-  - Moire for friendship Prompts...
-  - Moire as background for when user is guessing
-  - Moire ideas to explore
-    - dark lines going in a circle, like a subtle Loading Icon
-    - Moire starting chill and eventually blowing up thats a symbol that the Friendship Prompt round is about over and you ened to pay attention.  Combine this with audio cues
-- Get some audio down!
-- Get the basic intro flow down...
-- More prompt ideas
-
-
+- Orange, lemon, red apple, green apple, <blue??>
 
 TODOS:
 
 Sounds:
-  Try to do the Audio in 2 hours -- 8:30am-11am, just get shit down...
-  It doesn't need to be perfect. Just focus on CLARITY
-  I can re-use my own music and stuff...
-  Just be cranking and making stuff.
-
-  I only need to pick like 4 different songs.
-  ** Include the countdown stuff and prompts at the end of the actual songs
-
-   I can use samples of my own stuff, or Cluster, or whatever...
-  Focus on the vibe it makes. Focus on Connection...
-
-  VisualizeHomeScreen
-  Theme song playing in background
-  VisualizeIntro
-  “Bloop!” Celebration sound -> Welcome overdub…
-  Countdown timer stuff too, or like HEY, PAY ATTENTION!
-
-  Attach the sounds as a first value in the friendPrompts arrays...
-
-
-  - [P0] Clear instructions!!
-    - ** Beginning flow, instructions and how you activate the game?
-  - [P0] ** Developing a strong theme or aesthetic around the Game, and allowing that to influence
-    the visual design decisions.
-      - Connection...
-      - [P0] What will the actual buttons be?
-
-  Different Screens:
-  - **Home Screen
-  - ** Instructions -> First friendship prompt
-  - Demo screen [DONE]
-  - User guessing screens
-  - ** Partner activity screens
-  - **Loser screen
-    - ??
 
   - [P2] Speed up demo when there's more moves, and like slow the pace down as it gets to the end...
   - [P0] Better activity prompts for every 3rd guess...
-    - Or Maybe like 3rd, 5th, 7th ...?
-  - [P0] Putting in basic sounds
   - [P1] Do a timeout???
 
   - Physical / Tuesday
     - [P0] Buy longer wire and actually test out
     - [P1] Reprogram makey makey for the buttons to not be o/p/q/v
-    - [P1] Recording new sounds!
     - [P0] Making sure speakers work / getting a new speaker wire
 
 Stuff to bring to Grey Area
