@@ -8,23 +8,13 @@ Remember Your Friends - Makeymakey Moire magic Speed / Memory collab make friend
 WORDS OF WISDOM:
 - Keep it simple, stupid...
 
-
 TODO / Ideas:
-- Figure out what the 5 objects are.  Color code them??
-- Orange, lemon, red apple, green apple, <blue??>
-
-TODOS:
-
-Sounds:
-
+  - [P0
+  
   - [P2] Speed up demo when there's more moves, and like slow the pace down as it gets to the end...
-  - [P0] Better activity prompts for every 3rd guess...
   - [P1] Do a timeout???
-
-  - Physical / Tuesday
-    - [P0] Buy longer wire and actually test out
-    - [P1] Reprogram makey makey for the buttons to not be o/p/q/v
-    - [P0] Making sure speakers work / getting a new speaker wire
+  
+    
 
 Stuff to bring to Grey Area
 - Projector
@@ -39,7 +29,7 @@ Stuff to bring to Grey Area
 var debug = true;
 
 // General game vars
-var spotCodes = ['a', 's', 'd', 'f'];
+var spotCodes = ['o', 'p', 'q', 'v'];
 var spotColors = [[255,0,0], [0,255,0], [0,0,255], [255,255,0]]
 var currComputerPick;
 var theFrameRate = 40;
@@ -314,6 +304,13 @@ function visualizeHomeScreen() {
   } else {
     resetMoireVars();
   }
+
+  fill(255);
+  textSize(34);
+  textFont('Verdana');
+  noStroke();
+  msg = "Grab a stranger, hold hands, and make a human chain from the orange to the lemon";
+  text(msg, windowWidth/10, windowHeight/10, 4*windowWidth/10, 4*windowHeight/10)
 }
 
 function visualizeIntro() {
@@ -392,10 +389,10 @@ function visualizeTextPrompt(moveNums) {
   colors = [weightedRandom(30,10,0,60), weightedRandom(30,10,0,60), weightedRandom(30,10,0,60)];
   visualizeMoire(-1, colors);
   fill(friendPrompts.currColor);
-  textSize(50);
+  textSize(34);
   textFont('Verdana');
   noStroke();
-  text(friendPrompts.currMsg, windowWidth/4, windowHeight/4, windowWidth/2, windowHeight/2);
+  text(friendPrompts.currMsg, windowWidth/10, windowHeight/10, 4*windowWidth/10, 4*windowHeight/5);
 }
 
 // TODO maybe only supply one point, and the other is a mirror?
@@ -471,9 +468,9 @@ function visualizeMoire(quadrant, colors, song) {
 
 // Play fun sounds in hurrr!!!
 function keyTyped() {
-  if (key === 'x') { // Let's play in_memory_game
-    if (currGameState == "hanging_out" || currGameState == 'user_lost') {
-      
+  console.log(key);
+
+  if ((currGameState == "hanging_out") && (spotCodes.indexOf(key) > -1)){
       // Move to next game state
       currGameState = "in_memory_game";
       memoryGameState = "intro";
@@ -490,7 +487,6 @@ function keyTyped() {
       computerMoves.push(chooseASpot(-1)); // -1 default value for chooseASpot
       memoryGameDemoCounter = 0;
       currMoveCounter = 0;
-    }
   } else if (spotCodes.indexOf(key) > -1) { // if 'key' is in spotCodes
     lastGuess = key;
     // play a sound
@@ -575,16 +571,29 @@ function initializeFriendPrompts() {
   
   // First break ...
   friendPrompts["3"] = [38000, ["Make up a secret handshake",
-                                 "Make up a synchronized dance",
-                                 "Find out the best part of your friend's day",
-                                  "Find out the worst part of your friend's day"], sounds["prompt"]];
+                                "Make up a synchronized dance",
+                                "Share the best part of your day",
+                                "Share the worst part of your day"], sounds["prompt"]];
   // Emotional
   friendPrompts["6"] = [38000, ["What's something your parents don't know about you?",
                                 "What's something your best friend doesn't know about you?",
-                                "Have you ever been in love?"], sounds["prompt"]];
+                                "Have you ever been in love?",
+                                "What's the first thing you did when you woke up today?",
+                                "What's something you've done these past 3 months that you're proud of?",
+                                "What's something you've done this week that you regret?",
+                                "What was your first favorite band?",
+                                "What takes you out of your comfort zone?",
+                                "If you can give one sentence advice about how to live life, what would it be?"], sounds["prompt"]];
 
   spiritualPsychological = ["Do you believe in a god?",
-                            "What do you think is the meaning of life?"];
+                            "What do you think is the meaning of life?",
+                            "What's a passion you want to more spend time doing?",
+                            "Would you rather live forever, or have 10 billion dollars today?",
+                            "What are your goals for living?",
+                            "What questions would you NOT like others to ask you?",
+                            "What are you most afraid of?",
+                            "Does technology improve or make your life worse?",
+                            "What makes you angriest?"];
 
   // Spiritual / Psychological
   friendPrompts["9"] =  [38000, spiritualPsychological, sounds["prompt"]];
@@ -592,6 +601,7 @@ function initializeFriendPrompts() {
   friendPrompts["15"] = [38000, spiritualPsychological, sounds["prompt"]];
   friendPrompts["18"] = [38000, spiritualPsychological, sounds["prompt"]];
   friendPrompts["21"] = [38000, spiritualPsychological, sounds["prompt"]];
+  friendPrompts["24"] = [38000, spiritualPsychological, sounds["prompt"]];
 
   friendPrompts["general"] = [3000, ["Great job! Let's add another"], sounds["trumpet"]];
 
