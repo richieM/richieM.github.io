@@ -83,7 +83,7 @@ function draw() {
 function moireVisualization() {
   currentX = 0;
   currentY = 0;
-  background(0,0,0,opacity; // clean up background
+  background(0,0,0,opacity); // clean up background
   
   for (i = 0; i < numLinesSlider.value(); i+= 1) {
     if (colorButtonState == 3) { // fully automated
