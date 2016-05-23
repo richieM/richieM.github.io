@@ -23,11 +23,11 @@ function setup() {
 function draw() {
   //rect(x,y,width,height)
   //ellipse(x,y,width,height)
-  background(randNum(12,35), randNum(240,255), randNum(120,140))
+  background(51, 0, 0);
   numShapes = 100;
 
   textSize(50);
-  fill(random(120,140),random(120,140),random(120,140));
+  fill(178,102,255);
   text("Ain't nobody got time for their shit getting fucked fast", 0, 1*windowHeight/3);
   text("- Katie S", windowWidth/2, 2*windowHeight/3);
 
