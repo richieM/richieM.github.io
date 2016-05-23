@@ -31,6 +31,10 @@ function draw() {
   text("Ain't nobody got time for their shit getting fucked fast", 0, 1*windowHeight/3);
   text("- Katie S", windowWidth/2, 2*windowHeight/3);
 
+  text("Should all of our communication be through this website now?", 0, 5*windowHeight/6);
+
+
+
 }
 
 
