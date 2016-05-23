@@ -29,7 +29,7 @@ function draw() {
   numShapes = 100;
 
   textSize(50);
-  fill(178,102,255);
+  fill(random(0,255), random(0,255), random(0,255));
   text("Ain't nobody got time for their shit getting fucked fast", 0, 1*windowHeight/3);
   text("- Katie S", windowWidth/2, 2*windowHeight/3);
 
