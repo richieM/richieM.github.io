@@ -1,0 +1,50 @@
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<!-- Plots go in blank <div> elements. 
+    You can size them in the plot layout,
+    or give the div a size as shown here.
+-->
+<div id="tester" style="width:90%;height:550px;"></div>
+
+<script>
+TESTER = document.getElementById('tester');
+
+Plotly.d3.csv('allTheData.csv', function(err, rows){
+var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
+
+var xxAxis = "Sports"
+var yyAxis = "Colloquial"
+
+var data = continents.map(function(continent) {
+  var rowsFiltered = rows.filter(function(row) {
+      //return (row.continent === continent) && (+row.year === YEAR);
+      return true;
+  });
+  return {
+      mode: 'markers',
+      name: continent,
+      x: unpack(rowsFiltered, xxAxis),
+      y: unpack(rowsFiltered, yyAxis),
+      text: unpack(rowsFiltered, 'Show Name'),
+      marker: {
+          symbol: 'circle',
+          sizemode: 'area',
+          size: 13,
+      }
+  };
+});
+var layout = {
+  xaxis: {title: xxAxis},
+  yaxis: {title: yyAxis},
+  margin: {t: 20},
+  hovermode: 'closest'
+};
+Plotly.plot(TESTER, data, layout, {showLink: false});
+});
+</script>

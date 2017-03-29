@@ -1,0 +1,55 @@
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<p>
+    Here's a simple Plotly plot - 
+    <a href="http://bit.ly/1Or9igj">plotly.js documentation</a>
+</p>
+
+<!-- Plots go in blank <div> elements. 
+    You can size them in the plot layout,
+    or give the div a size as shown here.
+-->
+<div id="tester" style="width:90%;height:550px;"></div>
+
+<script>
+TESTER = document.getElementById('tester');
+
+Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv', function(err, rows){
+var YEAR = 2007;
+var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
+var POP_TO_PX_SIZE = 2e5;
+function unpack(rows, key) {
+  debugger;
+  return rows.map(function(row) { return row[key]; });
+}
+
+var data = continents.map(function(continent) {
+  var rowsFiltered = rows.filter(function(row) {
+      debugger;
+      return (row.continent === continent) && (+row.year === YEAR);
+  });
+  return {
+      mode: 'markers',
+      name: continent,
+      x: unpack(rowsFiltered, 'lifeExp'),
+      y: unpack(rowsFiltered, 'gdpPercap'),
+      text: unpack(rowsFiltered, 'country'),
+      marker: {
+          sizemode: 'area',
+          size: unpack(rowsFiltered, 'pop'),
+          sizeref: POP_TO_PX_SIZE
+      }
+  };
+});
+var layout = {
+  xaxis: {title: 'Life Expectancy'},
+  yaxis: {title: 'GDP per Capita', type: 'log'},
+  margin: {t: 20},
+  hovermode: 'closest'
+};
+Plotly.plot(TESTER, data, layout, {showLink: false});
+});
+</script>
