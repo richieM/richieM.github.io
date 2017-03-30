@@ -87,7 +87,7 @@ d3.csv("topics_new.csv", function(error, data) {
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
   // x-axis
-  svg.append("g")
+  /*svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis)
@@ -108,7 +108,7 @@ d3.csv("topics_new.csv", function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("y");
+      .text("y");*/
 
   // draw dots
   svg.selectAll(".dot")
@@ -123,10 +123,10 @@ d3.csv("topics_new.csv", function(error, data) {
           tooltip.transition()
                .duration(200)
                .style("opacity", .9);
-          tooltip.html(d["top_topic"] + "<br/>" + d["Episode Data"] + "<br/> (" + xValue(d) 
-	        + ", " + yValue(d) + ")")
+          tooltip.html("Show / Episode: " + d["Episode Data"] + "<br/>" + "Topic: " + d["top_topic"])
                .style("left", 0 + "px")
-               .style("top", height+50 + "px");
+               .style("top", height+50 + "px")
+               .style("width", "auto");
       })
       .on("mouseout", function(d) {
           tooltip.transition()
@@ -135,7 +135,7 @@ d3.csv("topics_new.csv", function(error, data) {
       });
 
   // draw legend
-  var legend = svg.selectAll(".legend")
+  /*var legend = svg.selectAll(".legend")
       .data(color.domain())
     .enter().append("g")
       .attr("class", "legend")
@@ -154,7 +154,7 @@ d3.csv("topics_new.csv", function(error, data) {
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
-      .text(function(d) { return d;})
+      .text(function(d) { return d;})*/
 });
 
 </script>

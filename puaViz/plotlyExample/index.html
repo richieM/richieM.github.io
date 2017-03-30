@@ -22,13 +22,11 @@ var YEAR = 2007;
 var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
 var POP_TO_PX_SIZE = 2e5;
 function unpack(rows, key) {
-  debugger;
   return rows.map(function(row) { return row[key]; });
 }
 
 var data = continents.map(function(continent) {
   var rowsFiltered = rows.filter(function(row) {
-      debugger;
       return (row.continent === continent) && (+row.year === YEAR);
   });
   return {
@@ -44,6 +42,7 @@ var data = continents.map(function(continent) {
       }
   };
 });
+debugger;
 var layout = {
   xaxis: {title: 'Life Expectancy'},
   yaxis: {title: 'GDP per Capita', type: 'log'},

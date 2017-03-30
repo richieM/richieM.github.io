@@ -87,7 +87,7 @@ d3.csv("show_topics.csv", function(error, data) {
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
-  // x-axis
+  /*// x-axis
   svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
@@ -109,25 +109,26 @@ d3.csv("show_topics.csv", function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("y");
+      .text("y");*/
 
   // draw dots
   svg.selectAll(".dot")
       .data(data)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r", 7.5)
+      .attr("r", 5.8)
       .attr("cx", xMap)
       .attr("cy", yMap)
+      .style("opacity", .7)
       .style("fill", function(d) { return color(cValue(d));}) 
       .on("mouseover", function(d) {
           tooltip.transition()
                .duration(200)
                .style("opacity", .9);
-          tooltip.html(d["top_topics_list"] + "<br/>" + d["Episode Data"] + "<br/> (" + xValue(d) 
-	        + ", " + yValue(d) + ")")
+           tooltip.html("Show: " + d["Episode Data"] + "<br/>" + "Topic: " + d["top_topic"])
                .style("left", 0 + "px")
-               .style("top", height+50 + "px");
+               .style("top", height+50 + "px")
+               .style("width", "auto");
       })
       .on("mouseout", function(d) {
           tooltip.transition()
@@ -135,7 +136,7 @@ d3.csv("show_topics.csv", function(error, data) {
                .style("opacity", 0);
       });
 
-  // draw legend
+  /*// draw legend
   var legend = svg.selectAll(".legend")
       .data(color.domain())
     .enter().append("g")
@@ -155,7 +156,7 @@ d3.csv("show_topics.csv", function(error, data) {
       .attr("y", 9)
       .attr("dy", ".35em")
       .style("text-anchor", "end")
-      .text(function(d) { return d;})
+      .text(function(d) { return d;})*/
 });
 
 </script>
