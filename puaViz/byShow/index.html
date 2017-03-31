@@ -35,8 +35,8 @@ body {
 
 <script>
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 570 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 700 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom;
 
 var topics = ["Relationships", "Arts", "Hunting", "Entertainment", "Investing", "Outdoors", "Wall Street", "Legal", "Sports", "Religion", "International Politics", "NSFW", "Self-Improvement", "Pets", "Opinion", "Medicine", "Automotive", "Dating", "Asia", "Winter Holidays", "Social Media", "Literature", "Eating", "Farming / Gardening", "Business", "Nature", "Food", "Scientific Research", "Photography", "Beverages", "News / Politics", "Diet", "Anatomy", "Energy / Climate Change", "Space", "California", "European Politics", "Judicial", "NBA", "Drugs", "Economics", "Animals", "Conflict / War", "Music", "Brain Science", "Science", "U.S. Politics", "NFL", "Places / Transportation", "Disease", "Fighting", "Movies", "Health Care", "Race", "Women's Health", "Death / Disaster", "Sleep / Spooky", "Fitness", "Conservative Politics", "Digital Entrepreneurship", "Crime", "Startups", "History", "Comedy", "Guns / Police", "Family", "Pro Wrestling", "Medical Treatment", "Colloquial", "U.S. Election 2016", "College Football", "Sex", "Cryptocurrency", "TV", "Fashion / Style", "Radio", "Communication", "Tech", "Money", "Education", "Mobile Tech"]
 
@@ -123,7 +123,7 @@ d3.csv("show_topics.csv", function(error, data) {
       .data(data)
     .enter().append("circle")
       .attr("class", "dot")
-      .attr("r", 5.8)
+      .attr("r", 6)
       .attr("cx", xMap)
       .attr("cy", yMap)
       .style("opacity", .7)
