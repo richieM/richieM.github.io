@@ -57,7 +57,7 @@ var yValue = function(d) { return d.y;}, // data -> value
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 // setup fill color
-var cValue = function(d) { return d.top_topic},
+var cValue = function(d) { return d.topTopic},
     color = d3.scale.category10();
 
 // add the graph canvas to the body of the webpage
@@ -73,7 +73,7 @@ var tooltip = d3.select("body").append("div")
     .style("opacity", 0);
 
 // load data
-d3.csv("topics_new.csv", function(error, data) {
+d3.csv("topics.csv", function(error, data) {
 
   // change string (from CSV) into number format
   data.forEach(function(d) {
@@ -123,7 +123,7 @@ d3.csv("topics_new.csv", function(error, data) {
           tooltip.transition()
                .duration(200)
                .style("opacity", .9);
-          tooltip.html("Show / Episode: " + d["Episode Data"] + "<br/>" + "Topic: " + d["top_topic"])
+          tooltip.html("Show: " + d["showTitle"] + "<br/>" + "Episode: " + d["episodeTitle"] + "<br/>" +"Topic: " + d["topTopic"])
                .style("left", 0 + "px")
                .style("top", height+50 + "px")
                .style("width", "auto");
