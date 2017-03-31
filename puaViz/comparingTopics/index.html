@@ -8,8 +8,8 @@
     You can size them in the plot layout,
     or give the div a size as shown here.
 -->
-<span> Y-Axis </span> <select id="y-axis"></select>
-<span style="padding-left:20px;"> X-Axis </span> <select id="x-axis"></select>
+<span> X-Axis </span> <select id="x-axis"></select>
+<span style="padding-left:20px;"> Y-Axis </span> <select id="y-axis"></select>
 <div id="tester" style="width:90%;height:550px;"></div>
 
 <script>
@@ -18,18 +18,18 @@ var runPlotFunction = function (xValue, yValue) {
   TESTER = document.getElementById('tester');
   Plotly.d3.csv('allTheData.csv', function(err, rows){
     var topics = Object.keys(rows[0]).slice(3);
-    if ($("#y-axis option").length === 0) {
+    if ($("#x-axis option").length === 0) {
       topics = topics.sort();
       $.each(topics, function(i, v) {
         if (v==="News / Politics") {
-          $("#y-axis").append("<option selected>"+v+"</option>");
-        } else {
-          $("#y-axis").append("<option>"+v+"</option>");
-        }
-        if (v==="Colloquial") {
           $("#x-axis").append("<option selected>"+v+"</option>");
         } else {
           $("#x-axis").append("<option>"+v+"</option>");
+        }
+        if (v==="Colloquial") {
+          $("#y-axis").append("<option selected>"+v+"</option>");
+        } else {
+          $("#y-axis").append("<option>"+v+"</option>");
         }
       });
     }
