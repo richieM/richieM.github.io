@@ -35,8 +35,8 @@ body {
 
 <script>
 var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 700 - margin.left - margin.right,
-    height = 700 - margin.top - margin.bottom;
+    width = 550 - margin.left - margin.right,
+    height = 550 - margin.top - margin.bottom;
 
 var topics = ["Relationships", "Arts", "Hunting", "Entertainment", "Investing", "Outdoors", "Wall Street", "Legal", "Sports", "Religion", "International Politics", "NSFW", "Self-Improvement", "Pets", "Opinion", "Medicine", "Automotive", "Dating", "Asia", "Winter Holidays", "Social Media", "Literature", "Eating", "Farming / Gardening", "Business", "Nature", "Food", "Scientific Research", "Photography", "Beverages", "News / Politics", "Diet", "Anatomy", "Energy / Climate Change", "Space", "California", "European Politics", "Judicial", "NBA", "Drugs", "Economics", "Animals", "Conflict / War", "Music", "Brain Science", "Science", "U.S. Politics", "NFL", "Places / Transportation", "Disease", "Fighting", "Movies", "Health Care", "Race", "Women's Health", "Death / Disaster", "Sleep / Spooky", "Fitness", "Conservative Politics", "Digital Entrepreneurship", "Crime", "Startups", "History", "Comedy", "Guns / Police", "Family", "Pro Wrestling", "Medical Treatment", "Colloquial", "U.S. Election 2016", "College Football", "Sex", "Cryptocurrency", "TV", "Fashion / Style", "Radio", "Communication", "Tech", "Money", "Education", "Mobile Tech"]
 
@@ -74,6 +74,13 @@ var svg = d3.select("body").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 10 - (margin.top / 2))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "20px") 
+        .text("Shows Clustered By Topic");
 
 // add the tooltip area to the webpage
 var tooltip = d3.select("body").append("div")
