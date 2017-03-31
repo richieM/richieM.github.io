@@ -37,6 +37,10 @@ var margin = {top: 20, right: 20, bottom: 30, left: 40},
     width = 570 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
+var topics = ["Relationships", "Arts", "Hunting", "Entertainment", "Investing", "Outdoors", "Wall Street", "Legal", "Sports", "Religion", "International Politics", "NSFW", "Self-Improvement", "Pets", "Opinion", "Medicine", "Automotive", "Dating", "Asia", "Winter Holidays", "Social Media", "Literature", "Eating", "Farming / Gardening", "Business", "Nature", "Food", "Scientific Research", "Photography", "Beverages", "News / Politics", "Diet", "Anatomy", "Energy / Climate Change", "Space", "California", "European Politics", "Judicial", "NBA", "Drugs", "Economics", "Animals", "Conflict / War", "Music", "Brain Science", "Science", "U.S. Politics", "NFL", "Places / Transportation", "Disease", "Fighting", "Movies", "Health Care", "Race", "Women's Health", "Death / Disaster", "Sleep / Spooky", "Fitness", "Conservative Politics", "Digital Entrepreneurship", "Crime", "Startups", "History", "Comedy", "Guns / Police", "Family", "Pro Wrestling", "Medical Treatment", "Colloquial", "U.S. Election 2016", "College Football", "Sex", "Cryptocurrency", "TV", "Fashion / Style", "Radio", "Communication", "Tech", "Money", "Education", "Mobile Tech"]
+
+var colorz = ["#876162", "#9f02fd", "#15c620", "#d60a01", "#cba818", "#1f65d7", "#c90290", "#29bfaa", "#02b7f8", "#47771b", "#fa8e69", "#d894dc", "#c33253", "#b3ac7a", "#9441ce", "#0b7584", "#955f13", "#5c67a0", "#42c26e", "#a1acbe", "#fa9206", "#93b826", "#ed90a3", "#ff74fa", "#1a5afc", "#a54b7d", "#59714f", "#b64708", "#8854a9", "#a55340", "#9ba5f9", "#91b765", "#81663e", "#d2a08f", "#de9e53", "#3cbad1", "#fd83c0", "#8fb3a1", "#077a58", "#6f6e0d", "#616b7c", "#7d40f3", "#ce2330", "#b10ad8", "#bdac51", "#c99ebf", "#bc15b3", "#ae3aa1", "#c32a75", "#6bbc83", "#825f85", "#6abf42", "#84aee5", "#db8cf9", "#ff8d3f", "#6a58ce", "#e19b72", "#3a6f97", "#176cbb", "#ba4138", "#a74f5a", "#726a59", "#177c05", "#b3aa98", "#147b3c", "#fc8a87", "#22c54d", "#fb7fdd", "#64c104", "#92b584", "#b0b129", "#bba0dc", "#3c746a", "#0dc28c", "#e39e1d", "#627133", "#e492bf", "#bd9af9", "#5863bb", "#a85222", "#7cb4be"]
+
 /* 
  * value accessor - returns the value to encode for a given data object.
  * scale - maps value to a visual display encoding, such as a pixel position.
@@ -57,8 +61,10 @@ var yValue = function(d) { return d.y;}, // data -> value
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 // setup fill color
-var cValue = function(d) { return d.topTopic},
-    color = d3.scale.category10();
+    //color = d3.scale.category10();
+    color = d3.scale.ordinal()
+    .domain(topics)
+    .range(colorz);
 
 // add the graph canvas to the body of the webpage
 var svg = d3.select("body").append("svg")
@@ -118,7 +124,7 @@ d3.csv("topics.csv", function(error, data) {
       .attr("r", 3.0)
       .attr("cx", xMap)
       .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));}) 
+      .style("fill", function(d) { return color(d.topTopic);}) 
       .on("mouseover", function(d) {
           tooltip.transition()
                .duration(200)
