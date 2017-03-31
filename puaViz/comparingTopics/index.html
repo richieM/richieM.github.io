@@ -8,9 +8,11 @@
     You can size them in the plot layout,
     or give the div a size as shown here.
 -->
-<span> X-Axis </span> <select id="x-axis"></select>
-<span style="padding-left:20px;"> Y-Axis </span> <select id="y-axis"></select>
-<div id="tester" style="width:90%;height:550px;"></div>
+<div style="font-size:16px;font-family:serif;">
+<span style="padding-right:2px;"> X-Axis </span> <select id="x-axis" style="font-size:16px;font-family:serif;"></select>
+<span style="padding-left:20px;padding-right:2px;"> Y-Axis </span> <select id="y-axis" style="font-size:16px;font-family:serif;"></select>
+</div>
+<div id="tester" style="width:90%;height:550px;font-family:serif, Times, serif;"></div>
 
 <script>
 
@@ -44,16 +46,27 @@ var runPlotFunction = function (xValue, yValue) {
       y: unpack(rows, yValue),
       text: unpack(rows, 'Show Name'),
       marker: {
-        symbol: 'circle',
+        symbol: "circle",
         sizemode: 'area',
         size: 8,
-        color: '#8B35B0',
+        color: '#572C80',
       }
     }];
     var layout = {
-      xaxis: {title: xValue},
-      yaxis: {title: yValue},
+      xaxis: {
+        title: xValue,
+        titlefont: {
+          family: 'Serif',
+          size: 18,
+         }},
+      yaxis: {
+        title: yValue,
+        titlefont: {
+          family: 'Serif',
+          size: 18,
+         }},
       margin: {t: 20},
+      size: 20,
       hovermode: 'closest'
     };
     Plotly.plot(TESTER, data, layout, {showLink: false});
