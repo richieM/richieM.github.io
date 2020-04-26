@@ -1,0 +1,101 @@
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<!-- Plots go in blank <div> elements. 
+    You can size them in the plot layout,
+    or give the div a size as shown here.
+-->
+<div id="myDiv" style="width:90%;height:550px;"></div>
+
+<script>
+Plotly.d3.csv('https://data.sfgov.org/resource/tvq9-ec9w.csv', function(err, rows){
+
+function unpack(rows, key) {
+  return rows.map(function(row) { 
+   if (row["case_disposition"] == "Confirmed"){
+      return row[key];
+    }; });
+}
+
+casesDict = {}
+deathDict = {}
+
+var i;
+for (i = 0; i < rows.length; i++) {
+  if (rows[i]["case_disposition"] == "Confirmed"){
+      currDate = rows[i]["date"]
+      currCases = parseInt(rows[i]["case_count"])
+      if (currDate in casesDict) {
+        casesDict[currDate] += currCases
+      } else {
+        casesDict[currDate] = currCases
+      }
+  }
+
+  if (rows[i]["case_disposition"] == "Death"){
+      currDate = rows[i]["date"]
+      currCases = parseInt(rows[i]["case_count"])
+      if (currDate in deathDict) {
+        deathDict[currDate] += currCases
+      } else {
+        deathDict[currDate] = currCases
+      }
+  }
+
+}
+
+
+
+var casesData = {
+  type: "scatter",
+  mode: "lines",
+  name: 'New cases per day',
+  x: Object.keys(casesDict),
+  y: Object.values(casesDict),
+  line: {color: '#1279ED'}
+}
+
+var deathData = {
+  type: "bar",
+  mode: "lines",
+  name: 'New deaths per day',
+  x: Object.keys(deathDict),
+  y: Object.values(deathDict),
+  line: {color: '#B5DD02'}
+}
+
+//data = [casesData]
+data = [casesData, deathData]
+
+var layout = {
+  title: 'SF COVID-19 New Cases By Day',
+  xaxis: {
+    type: 'date',
+    title: {
+      automargin: true,
+      text: "Date"
+    }
+  },
+  yaxis: {
+    title: {
+      automargin: true,
+      text: "New cases"
+    }
+  },
+};
+
+Plotly.plot(myDiv, data, layout);
+})
+
+</script>
+
+<p>
+    Data from  - 
+    <a href="https://data.sfgov.org/stories/s/fjki-2fab">San Francisco COVID-19 Data Tracker</a>
+    <br>
+
+    Powered by their <a href="https://data.sfgov.org/COVID-19/COVID-19-Cases-Summarized-by-Date-Transmission-and/tvq9-ec9w"> API</a>
+</p>
+
