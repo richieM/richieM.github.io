@@ -305,6 +305,7 @@ presetButtons.forEach(button => {
     });
 });
 
+
 rootNoteSelect.addEventListener('change', updateScaleNotes);
 scaleSelect.addEventListener('change', updateScaleNotes);
 
