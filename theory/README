@@ -2,9 +2,7 @@ NEXT FEATURES:
 - better synth ( fm synth or what?) see tone docs
 - export to midi
 - support many different scales (copy the scales i have from the other app (code somwehre hopefully))
-
-better song UI, maybe so that there are like slots for each beat of the song and the chords just fill it in
-
-and then its in like 4/4 or whatever
-
-then i can support non-trad time signatures
+- BPM slider
+- roman numeral notation vs chord notation (vs number notation) clickbox
+- better song UI, maybe so that there are like slots for each beat of the song and the chords just fill it in. and then its in like 4/4 or whatever
+- then i can support non-trad time signatures
