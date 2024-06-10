@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chord Progressions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Chord Progressions</h1>
+        <label for="root-note">Select Root Note: </label>
+        <select id="root-note">
+            <option value="C">C</option>
+            <option value="C#">C#</option>
+            <option value="D">D</option>
+            <option value="D#">D#</option>
+            <option value="E">E</option>
+            <option value="F">F</option>
+            <option value="F#">F#</option>
+            <option value="G">G</option>
+            <option value="G#">G#</option>
+            <option value="A">A</option>
+            <option value="A#">A#</option>
+            <option value="B">B</option>
+        </select>
+
+        <div class="preset-buttons">
+            <button class="preset-button" data-progression="I-IV-V-I">I-IV-V-I</button>
+            <button class="preset-button" data-progression="ii-V-I">ii-V-I</button>
+            <button class="preset-button" data-progression="I-vi-IV-V">I-vi-IV-V</button>
+            <button class="preset-button" data-progression="I-V-vi-IV">I-V-vi-IV</button>
+            <button class="preset-button" data-progression="vi-IV-I-V">vi-IV-I-V</button>
+        </div>
+
+        <div id="scale-notes" class="scale-notes"></div>
+        <h2>Song</h2>
+        <div id="song-display" class="song-display"></div>
+        <button id="play-song" class="play-button">Play Song</button>
+        <button id="clear-chords" class="clear-button">Clear Chords</button>
+        <button id="export-midi" class="export-button">Export Progression to MIDI</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.34/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tonejs/midi@next"></script>
+    <script src="script.js"></script>
+</body>
+</html>
