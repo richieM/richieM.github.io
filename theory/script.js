@@ -1,43 +1,46 @@
 const rootNoteSelect = document.getElementById('root-note');
+const scaleSelect = document.getElementById('scale-select');
 const scaleNotesContainer = document.getElementById('scale-notes');
+const scaleIntervalsContainer = document.getElementById('scale-intervals');
 const songDisplay = document.getElementById('song-display');
 const playButton = document.getElementById('play-song');
 const clearButton = document.getElementById('clear-chords');
 const exportButton = document.getElementById('export-midi');
 const presetButtons = document.querySelectorAll('.preset-button');
 
-const majorScales = {
-    'C': ['C', 'D', 'E', 'F', 'G', 'A', 'B'],
-    'C#': ['C#', 'D#', 'E#', 'F#', 'G#', 'A#', 'B#'],
-    'D': ['D', 'E', 'F#', 'G', 'A', 'B', 'C#'],
-    'D#': ['D#', 'E#', 'F##', 'G#', 'A#', 'B#', 'C##'],
-    'E': ['E', 'F#', 'G#', 'A', 'B', 'C#', 'D#'],
-    'F': ['F', 'G', 'A', 'Bb', 'C', 'D', 'E'],
-    'F#': ['F#', 'G#', 'A#', 'B', 'C#', 'D#', 'E#'],
-    'G': ['G', 'A', 'B', 'C', 'D', 'E', 'F#'],
-    'G#': ['G#', 'A#', 'B#', 'C#', 'D#', 'E#', 'F##'],
-    'A': ['A', 'B', 'C#', 'D', 'E', 'F#', 'G#'],
-    'A#': ['A#', 'B#', 'C##', 'D#', 'E#', 'F##', 'G##'],
-    'B': ['B', 'C#', 'D#', 'E', 'F#', 'G#', 'A#']
+const scales = {
+    'Major': [0, 2, 4, 5, 7, 9, 11],
+    'Minor': [0, 2, 3, 5, 7, 9, 10],
+    'Hungarian_Gypsy': [0, 2, 3, 6, 7, 8, 10],
+    'Hungarian_Minor': [0, 2, 3, 6, 7, 8, 11],
+    'Hungarian_Major': [0, 3, 4, 6, 7, 9, 10],
+    'Whole_Tone': [0, 2, 4, 6, 8, 10],
+    'Blues': [0, 3, 5, 6, 7, 10],
+    'Pentatonic': [0, 2, 4, 7, 9],
+    'Harmonic_Minor': [0, 2, 3, 5, 7, 8, 11],
+    'Ascending_Melodic_Minor': [0, 2, 3, 5, 7, 9, 11],
+    'Lydian-Augmented': [0, 2, 4, 6, 8, 9, 11],
+    'Lydian_b7': [0, 2, 4, 6, 7, 9, 10],
+    'Locrian_#2': [0, 2, 3, 5, 6, 8, 10],
+    'Super_Locrian': [0, 1, 3, 4, 6, 8, 10],
+    'Bop': [0, 2, 4, 5, 7, 8, 9, 11],
+    'Egyptian': [0, 2, 5, 7, 10],
+    'Phrygian_Dominant': [0, 1, 4, 5, 7, 8, 10]
 };
 
 const chordFormulas = {
-    'major': [0, 4, 7],
-    'minor': [0, 3, 7],
-    '7': [0, 4, 7, 10],
-    'major7': [0, 4, 7, 11],
-    '9': [0, 4, 7, 10, 14],
-    'minor7': [0, 3, 7, 10]
-};
-
-const chordOptions = {
-    0: ['major', 'major7', '9'],
-    1: ['minor', 'minor7', '9'],
-    2: ['minor', 'minor7'],
-    3: ['major', 'major7', '9'],
-    4: ['major', '7', '9'],
-    5: ['minor', 'minor7', '9'],
-    6: [] // The VII chord is typically diminished and not used in major scales for these chord types
+    'Major_Triad': [0, 4, 7],
+    'Minor_Triad': [0, 3, 7],
+    'Augmented_Triad': [0, 4, 8],
+    'Diminished_Triad': [0, 3, 6],
+    'Diminished_7th': [0, 3, 6, 9],
+    'Half-Diminished_7th': [0, 3, 6, 10],
+    'Minor_7th': [0, 3, 7, 10],
+    'Minor_Major_7th': [0, 3, 7, 11],
+    'Dominant_7th': [0, 4, 7, 10],
+    'Major_7th': [0, 4, 7, 11],
+    'Augmented_7th': [0, 4, 8, 10],
+    'Augmented_Major_7th': [0, 4, 8, 11]
 };
 
 const noteIndex = {
@@ -47,9 +50,16 @@ const noteIndex = {
 const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 let synth;
+
 function updateScaleNotes() {
     const rootNote = rootNoteSelect.value;
-    const scaleNotes = majorScales[rootNote];
+    const selectedScale = scaleSelect.value;
+    const scaleIntervals = scales[selectedScale];
+    const scaleNotes = scaleIntervals.map(interval => notes[(noteIndex[rootNote] + interval) % 12]);
+
+    // Update scale intervals display
+    scaleIntervalsContainer.innerText = `Intervals: ${scaleIntervals.join(', ')}`;
+
     scaleNotesContainer.innerHTML = '';
     scaleNotes.forEach((note, index) => {
         const noteContainer = document.createElement('div');
@@ -63,13 +73,13 @@ function updateScaleNotes() {
         const chordButtons = document.createElement('div');
         chordButtons.className = 'chord-buttons';
 
-        const options = chordOptions[index];
-        options.forEach(type => {
+        const availableChords = getAvailableChords(note, scaleNotes);
+        availableChords.forEach(chord => {
             const noteButton = document.createElement('button');
-            noteButton.innerText = type;
+            noteButton.innerText = chord.replace('_', ' ');
             noteButton.className = 'note-button';
-            noteButton.addEventListener('click', () => addChordToSong(note, type));
-            noteButton.addEventListener('mouseover', () => playHoverChord(note, type));
+            noteButton.addEventListener('click', () => addChordToSong(note, chord));
+            noteButton.addEventListener('mouseover', () => playHoverChord(note, chord));
             noteButton.addEventListener('mouseout', stopHoverChord);
             chordButtons.appendChild(noteButton);
         });
@@ -77,6 +87,18 @@ function updateScaleNotes() {
         noteContainer.appendChild(chordButtons);
         scaleNotesContainer.appendChild(noteContainer);
     });
+}
+
+function getAvailableChords(note, scaleNotes) {
+    const availableChords = [];
+
+    for (const [chordName, intervals] of Object.entries(chordFormulas)) {
+        if (intervals.every(interval => scaleNotes.includes(notes[(noteIndex[note] + interval) % 12]))) {
+            availableChords.push(chordName);
+        }
+    }
+
+    return availableChords;
 }
 
 function playHoverChord(note, type) {
@@ -96,7 +118,7 @@ function stopHoverChord() {
 function addChordToSong(note, type, duration = 2) {
     const chord = createChord(note, chordFormulas[type]);
     const chordDiv = document.createElement('div');
-    chordDiv.innerText = note + " " + type;
+    chordDiv.innerText = note + " " + type.replace('_', ' ');
     chordDiv.className = 'chord';
     chordDiv.draggable = true;
     chordDiv.dataset.chord = JSON.stringify([note, type]);
@@ -272,7 +294,7 @@ presetButtons.forEach(button => {
     button.addEventListener('click', () => {
         const progression = button.dataset.progression.split('-');
         const rootNote = rootNoteSelect.value;
-        const scaleNotes = majorScales[rootNote];
+        const scaleNotes = scales['Major'].map(interval => notes[(noteIndex[rootNote] + interval) % 12]);
         songDisplay.innerHTML = ''; // Clear the current song
         progression.forEach(step => {
             const index = romanToIndex(step);
@@ -283,36 +305,8 @@ presetButtons.forEach(button => {
     });
 });
 
-function romanToIndex(roman) {
-    switch (roman) {
-        case 'I': return 0;
-        case 'ii': return 1;
-        case 'iii': return 2;
-        case 'IV': return 3;
-        case 'V': return 4;
-        case 'vi': return 5;
-        default: return 0;
-    }
-}
-
-function getDefaultChordType(index) {
-    switch (index) {
-        case 0: return 'major';
-        case 1: return 'minor';
-        case 2: return 'minor';
-        case 3: return 'major';
-        case 4: return 'major';
-        case 5: return 'minor';
-        default: return 'major';
-    }
-}
-
-clearButton.addEventListener('click', () => {
-    songDisplay.innerHTML = '';
-});
-
-playButton.addEventListener('click', playSong);
 rootNoteSelect.addEventListener('change', updateScaleNotes);
+scaleSelect.addEventListener('change', updateScaleNotes);
 
 // Initialize the scale notes on page load
 updateScaleNotes();

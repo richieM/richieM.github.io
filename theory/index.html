@@ -9,21 +9,46 @@
 <body>
     <div class="container">
         <h1>Chord Progressions</h1>
-        <label for="root-note">Select Root Note: </label>
-        <select id="root-note">
-            <option value="C">C</option>
-            <option value="C#">C#</option>
-            <option value="D">D</option>
-            <option value="D#">D#</option>
-            <option value="E">E</option>
-            <option value="F">F</option>
-            <option value="F#">F#</option>
-            <option value="G">G</option>
-            <option value="G#">G#</option>
-            <option value="A">A</option>
-            <option value="A#">A#</option>
-            <option value="B">B</option>
-        </select>
+        <div class="controls">
+            <label for="root-note">Select Root Note: </label>
+            <select id="root-note">
+                <option value="C">C</option>
+                <option value="C#">C#</option>
+                <option value="D">D</option>
+                <option value="D#">D#</option>
+                <option value="E">E</option>
+                <option value="F">F</option>
+                <option value="F#">F#</option>
+                <option value="G">G</option>
+                <option value="G#">G#</option>
+                <option value="A">A</option>
+                <option value="A#">A#</option>
+                <option value="B">B</option>
+            </select>
+
+            <label for="scale-select">Select Scale: </label>
+            <select id="scale-select">
+                <option value="Major">Major</option>
+                <option value="Minor">Minor</option>
+                <option value="Hungarian_Gypsy">Hungarian Gypsy</option>
+                <option value="Hungarian_Minor">Hungarian Minor</option>
+                <option value="Hungarian_Major">Hungarian Major</option>
+                <option value="Whole_Tone">Whole Tone</option>
+                <option value="Blues">Blues</option>
+                <option value="Pentatonic">Pentatonic</option>
+                <option value="Harmonic_Minor">Harmonic Minor</option>
+                <option value="Ascending_Melodic_Minor">Ascending Melodic Minor</option>
+                <option value="Lydian-Augmented">Lydian-Augmented</option>
+                <option value="Lydian_b7">Lydian b7</option>
+                <option value="Locrian_#2">Locrian #2</option>
+                <option value="Super_Locrian">Super Locrian</option>
+                <option value="Bop">Bop</option>
+                <option value="Egyptian">Egyptian</option>
+                <option value="Phrygian_Dominant">Phrygian Dominant</option>
+            </select>
+        </div>
+
+        <div id="scale-intervals" class="scale-intervals"></div>
 
         <div class="preset-buttons">
             <button class="preset-button" data-progression="I-IV-V-I">I-IV-V-I</button>
