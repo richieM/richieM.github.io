@@ -35,9 +35,14 @@ let kick;
 let snare;
 let openHiHat;
 let breakBeat;
-let chord1;
-let chord2;
+let eye_chord_1;
+let eye_chord_2;
+let eye_chord_3;
+let eye_chord_4;
+
 let chord3;
+
+let eyebrowSound;
 
 let mouthStartKey = 78
 let leftEyeStartKey = 263;
@@ -47,7 +52,7 @@ let browsStartKey = 151;
 let startPointX;
 let startPointY;
 
-let howManyBubbles = 50;
+let howManyBubbles = 30;
 let bubbleFrameLife = 60;
 
 let TRANS_LOWER_INCR = 5;
@@ -72,10 +77,13 @@ const mainSketchRichie = (p) => {
     kick = p.loadSound('oneShots/kick.wav');
     snare = p.loadSound('oneShots/snare.wav');
     openHiHat = p.loadSound('oneShots/openHiHat.wav');
-    breakBeat = p.loadSound('breaks/james_brown.wav')
-    chord1  = p.loadSound('chords/Perfume 001 Cm9.wav')
-    chord2 = p.loadSound('chords/Perfume 002 Bm9.wav')
+    breakBeat = p.loadSound('breaks/james_brown.wav');
+    eye_chord_1  = p.loadSound('chords/Perfume_Cm9.wav');
+    eye_chord_2 = p.loadSound('chords/Perfume_Bm9.wav');
+    eye_chord_3 = p.loadSound('chords/Old_tape_FsharpMaj9.wav');
+    eye_chord_4 = p.loadSound('chords/Hypothesis_DMaj9.wav');
     chord3 = p.loadSound('chords/85892__sandyrb__brass-end-in-a-001.wav')
+    eyebrowSound = p.loadSound('chords/cowbell.wav')
 
     p.frameRate(120);
 
@@ -279,7 +287,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
   }
 
   // LEFT EYE AND SNARE
-  if (eyeBlinkLeft > 0.52 && !leftEyeClosedState) {
+  if (eyeBlinkLeft > 0.35 && !leftEyeClosedState) {
     startPointX = faceLandmarks.faceLandmarks[0][leftEyeStartKey].x * W;
     startPointY = faceLandmarks.faceLandmarks[0][leftEyeStartKey].y * H;
     for (let i = 0; i < howManyBubbles; i++) {
@@ -288,11 +296,24 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     //p.fill(p.random(0,255), p.random(0,255), p.random(0,255));
     //p.ellipse(p.random(0,W), p.random(0,H), p.random(0,50), p.random(0,50));
     console.log("Left eye + snare")
-    chord1.play();
+
+    let randomNum = p.random(0,1);
+    if (randomNum < 0.25) {
+      eye_chord_1.play();
+    } else if (randomNum < 0.50) {
+      eye_chord_2.play();
+    } else if (randomNum < 0.75) {
+      eye_chord_3.play();
+    } else {
+      eye_chord_4.play();
+    }
     //synth.triggerAttackRelease("C3", "8n");
     leftEyeClosedState = true
   } else if (eyeBlinkLeft < 0.2 && leftEyeClosedState) { // RESET STATE
-    chord1.stop()
+    eye_chord_1.stop();
+    eye_chord_2.stop();
+    eye_chord_3.stop();
+    eye_chord_4.stop();
     leftEyeClosedState = false
   }
 
@@ -306,11 +327,11 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     //p.fill(p.random(0,255), p.random(0,255), p.random(0,255));
     //p.ellipse(p.random(0,W), p.random(0,H), p.random(0,50), p.random(0,50));
     console.log("Left eye + snare")
-    chord2.play();
+    chord3.play();
     //synth.triggerAttackRelease("C3", "8n");
     rightEyeClosedState = true
   } else if (eyeBlinkRight < 0.2 && rightEyeClosedState) { // RESET STATE
-    chord2.stop()
+    chord3.stop()
     rightEyeClosedState = false
   }
 
@@ -324,11 +345,11 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     //p.fill(p.random(0,255), p.random(0,255), p.random(0,255));
     //p.ellipse(p.random(0,W), p.random(0,H), p.random(0,50), p.random(0,50));
     console.log("BROW INNER UP")
-    chord3.play();
+    eyebrowSound.play();
     //synth.triggerAttackRelease("C3", "8n");
     browInnerUpAlready = true
-  } else if (browInnerUp < 0.2 && browInnerUpAlready) { // RESET STATE
-    chord3.stop()
+  } else if (browInnerUp < 0.5 && browInnerUpAlready) { // RESET STATE
+    eyebrowSound.stop()
     browInnerUpAlready = false
   }
 
