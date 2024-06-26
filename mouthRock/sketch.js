@@ -13,8 +13,8 @@ import {
 
 //let W = 1280;
 //let H = 720;
-let W = 2000;
-let H = 1125;
+// let W = 2000;
+// let H = 1400;
 
 let cam;
 let canv;
@@ -58,13 +58,13 @@ let howManyBubbles = 30;
 let bubbleFrameLife = 60;
 
 let TRANS_LOWER_INCR = 5;
-
+let W, H;
 const mainSketchRichie = (p) => {
   p.setup = async () => {
-    canv = p.createCanvas(W, H);
+    canv = p.createCanvas(p.windowWidth, p.windowHeight);
     cam = p.createCapture(p.VIDEO, false, () => {
-      let w = W;
-      let h = (cam.elt.videoHeight / cam.elt.videoWidth) * W;
+      let w = p.windowWidth;
+      let h = (cam.elt.videoHeight / cam.elt.videoWidth) * w;
       cam.size(w, h);
       canv.width = w;
       canv.height = h;
@@ -99,6 +99,12 @@ const mainSketchRichie = (p) => {
     p.scale(-1, 1);
     p.image(cam, cam.width, 0, -cam.width, cam.height);
     p.pop();
+
+    p.textSize(100);
+    p.fill(0);
+    p.text("MOUTH ROCK!", 50, 100)
+    p.text('Open mouth! Blink each eye! Raise eyebrows!', 50, 300);
+
     let startTimeMs = performance.now();
     if (lastVideoTime !== cam.elt.currentTime) {
       lastVideoTime = cam.elt.currentTime;
