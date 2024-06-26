@@ -11,8 +11,10 @@ import {
 //   BubbleMP,
 // } from "./bubbles.js";
 
-let W = 1280;
-let H = 720;
+//let W = 1280;
+//let H = 720;
+let W = 2000;
+let H = 1125;
 
 let cam;
 let canv;
@@ -318,7 +320,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
   }
 
   // RIGHT EYE AND openHiHat
-  if (eyeBlinkRight > 0.52 && !rightEyeClosedState) {
+  if (eyeBlinkRight > 0.40 && !rightEyeClosedState) {
     startPointX = faceLandmarks.faceLandmarks[0][rightEyeStartKey].x * W;
     startPointY = faceLandmarks.faceLandmarks[0][rightEyeStartKey].y * H;
     for (let i = 0; i < howManyBubbles; i++) {
@@ -336,7 +338,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
   }
 
   // BROW
-  if (browInnerUp > 0.80 && !browInnerUpAlready) {
+  if (browInnerUp > 0.75 && !browInnerUpAlready) {
     startPointX = faceLandmarks.faceLandmarks[0][browsStartKey].x * W;
     startPointY = faceLandmarks.faceLandmarks[0][browsStartKey].y * H;
     for (let i = 0; i < howManyBubbles; i++) {
