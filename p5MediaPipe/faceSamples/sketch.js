@@ -50,6 +50,8 @@ let startPointY;
 let howManyBubbles = 50;
 let bubbleFrameLife = 60;
 
+let TRANS_LOWER_INCR = 5;
+
 const mainSketchRichie = (p) => {
   p.setup = async () => {
     canv = p.createCanvas(W, H);
@@ -175,7 +177,8 @@ const mainSketchRichie = (p) => {
       );
 
       for (var i=0; i < bubbles.length; i++) {
-        if (p.frameCount - bubbleFrameLife > bubbles[i].startFrame) {
+        bubbles[i].transp -= TRANS_LOWER_INCR
+        if (bubbles[i].trans <= 0) {
           bubbles.splice(i, 1);
         } else {
           bubbles[i].display();
@@ -285,7 +288,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     //p.fill(p.random(0,255), p.random(0,255), p.random(0,255));
     //p.ellipse(p.random(0,W), p.random(0,H), p.random(0,50), p.random(0,50));
     console.log("Left eye + snare")
-    chord1.loop();
+    chord1.play();
     //synth.triggerAttackRelease("C3", "8n");
     leftEyeClosedState = true
   } else if (eyeBlinkLeft < 0.2 && leftEyeClosedState) { // RESET STATE
@@ -303,7 +306,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     //p.fill(p.random(0,255), p.random(0,255), p.random(0,255));
     //p.ellipse(p.random(0,W), p.random(0,H), p.random(0,50), p.random(0,50));
     console.log("Left eye + snare")
-    chord2.loop();
+    chord2.play();
     //synth.triggerAttackRelease("C3", "8n");
     rightEyeClosedState = true
   } else if (eyeBlinkRight < 0.2 && rightEyeClosedState) { // RESET STATE
@@ -321,7 +324,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     //p.fill(p.random(0,255), p.random(0,255), p.random(0,255));
     //p.ellipse(p.random(0,W), p.random(0,H), p.random(0,50), p.random(0,50));
     console.log("BROW INNER UP")
-    chord3.loop();
+    chord3.play();
     //synth.triggerAttackRelease("C3", "8n");
     browInnerUpAlready = true
   } else if (browInnerUp < 0.2 && browInnerUpAlready) { // RESET STATE
@@ -456,13 +459,11 @@ function BubbleOG(W, H, p, startX, startY, startFrame){
 		this.green = weightedRandom(116, 20, 0, 255,p);
 		this.blue = weightedRandom(134, 20, 0, 255,p);
 		this.transp = weightedRandom(150, 100, 0, 255,p);
-    this.trans = 255;
 	} else {
 		this.red = weightedRandom(144, 50, 0, 255,p);
 		this.green = weightedRandom(200, 25, 0, 255,p);
 		this.blue = weightedRandom(203, 25, 0, 255,p);
 		this.transp = weightedRandom(150, 60, 0, 255,p);
-    this.trans = 255;
 	}
 
 	this.display = function() {
