@@ -1,5 +1,0 @@
-/* Hide the top header/nav bar but keep Markdown styling */
-.site-header,
-.site-nav {
-    display: none;
-}
