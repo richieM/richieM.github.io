@@ -55,7 +55,7 @@ How can we keep scaling and make it affordable to do so? Faster fine-tunes, long
 
 - ★ **Aligned but Blind**: **Alignment Increases Implicit Bias by Reducing Awareness of Race**: `Alignment suprisingly amplifies implicit bias in model outputs... [Models] overlook racial concepts in early internal representations,,. We propose incentizing the representation of racial concepts in early model layers...Similar to race blindness in humans, ignoring racial nuances can indadvertantly perpetuate subtle biases in LMs.`[ACL Anthology](https://aclanthology.org/2025.acl-long.1078/)
 - **Fairness through Difference Awareness**: Introduces a metric for *desired* group discrimination when some differential treatment is actually the goal (e.g., equity-aware systems). [**ACL Best Paper Award**] [ACL Anthology](https://aclanthology.org/2025.acl-long.341/)
-- **Language Models Resist Alignment: Evidence from Data Compression**: Evidence that alignment doesn’t fully overwrite pretraining. [**ACL Best Paper Winner**] https://aclanthology.org/2025.acl-long.1141/
+- **Language Models Resist Alignment: Evidence from Data Compression**: Evidence that alignment doesn’t fully overwrite pretraining. [**ACL Best Paper Winner**] [ACL Anthology](https://aclanthology.org/2025.acl-long.1141/)
 
 ---
 
@@ -64,9 +64,9 @@ How can we keep scaling and make it affordable to do so? Faster fine-tunes, long
 Agents are still pretty hot. Agent calling and using tool calls were themes during the Thursday workshop on Agents — [REALM (Research on Agent Language Models) Workshop](https://realm-workshop.github.io/)
 
 - [**Chris Manning presentation - LinkedIn**](https://www.linkedin.com/posts/gaurikholkar_full-house-at-chris-mannings-talk-on-linguistic-activity-7356666193107107840-JxkY/)
-- **NNetNav**: Unsupervised browser agents that learn via in-the-wild interaction; this feels like the tech behind the recently released [Claude for Chrome](https://www.anthropic.com/news/claude-for-chrome). [presented by Christoper Manning] https://arxiv.org/abs/2410.02907
+- **NNetNav**: Unsupervised browser agents that learn via in-the-wild interaction; this feels like the tech behind the recently released [Claude for Chrome](https://www.anthropic.com/news/claude-for-chrome). [presented by Christoper Manning] [Arxiv](https://arxiv.org/abs/2410.02907)
 - [**Synthetic Data Generation & Multi-Step RL for Reasoning + Tool Use**, Anna Goldie](https://arxiv.org/abs/2504.04736) - not from ACL actually but interesting nonetheless!
-- ★ **[*Automating AI Research: How Far Are We?](http://iclr.cc/virtual/2025/37268)** [*Roberta Raileanu, Google**]** *(Seemingly the same talk + video but from ICLR)*
+- ★ [**Automating AI Research: How Far Are We?**(http://iclr.cc/virtual/2025/37268) Roberta Raileanu, Google
 
 ---
 
@@ -74,9 +74,9 @@ Agents are still pretty hot. Agent calling and using tool calls were themes duri
 
 Can we automate prompt engineering? How do we get observability into LLM’s?
 
-- ★ **PromptWizard**: **Optimizing Prompts via Task-Aware, Feedback-Driven Self Evolution:** fully automated framework for discrete prompt optimization, utilizing a self evolving, self-adapting mechanism. [Microsoft] https://aclanthology.org/2025.findings-acl.1025/
-- **SCULPT: Systematic Tuning of Long Prompts:** Structured tuning for *very long* prompts—systematic ways to adjust and compress long prompt scaffolds. https://aclanthology.org/2025.acl-long.730/
-- **MExGen Multi-Level Explanations for Generative Language Models:** Multi-level explanations that attribute generated outputs to parts of the context; extends SHAP ideas to LLM generation. https://aclanthology.org/2025.acl-long.1553.pdf
+- ★ **PromptWizard**: **Optimizing Prompts via Task-Aware, Feedback-Driven Self Evolution:** fully automated framework for discrete prompt optimization, utilizing a self evolving, self-adapting mechanism. [Microsoft] [ACL Anthology(https://aclanthology.org/2025.findings-acl.1025/)
+- **SCULPT: Systematic Tuning of Long Prompts:** Structured tuning for *very long* prompts—systematic ways to adjust and compress long prompt scaffolds. [ACL Anthology](https://aclanthology.org/2025.acl-long.730/)
+- **MExGen Multi-Level Explanations for Generative Language Models:** Multi-level explanations that attribute generated outputs to parts of the context; extends SHAP ideas to LLM generation. [ACL Anthology](https://aclanthology.org/2025.acl-long.1553.pdf)
 
 ---
 
@@ -84,11 +84,11 @@ Can we automate prompt engineering? How do we get observability into LLM’s?
 
 Pattern: Use a foundational model to generate synthetic data → fine tune a LLaMA ~8B model → achieve same performance as few-shotting on the foundational model
 
-- **TOOLFLOW: Boosting LLM Tool-Calling Through Natural and Coherent Dialogue Synthesis:** `We apply SFT on LLaMA3.1-8B using 8,000 synthetic dialogues generated with TOOLFLOW. Results show that the model achieves tool-calling performance comparable to or even surpassing GPT-4, while maintaining strong general capabilities.` https://aclanthology.org/2025.naacl-long.214/
+- **TOOLFLOW: Boosting LLM Tool-Calling Through Natural and Coherent Dialogue Synthesis:** `We apply SFT on LLaMA3.1-8B using 8,000 synthetic dialogues generated with TOOLFLOW. Results show that the model achieves tool-calling performance comparable to or even surpassing GPT-4, while maintaining strong general capabilities.` [ACL Anthology](https://aclanthology.org/2025.naacl-long.214/)
 - **Rethinking Low-Resource MT: The Surprising Effectiveness of
-Fine-Tuned Multilingual Models in the LLM Age:** https://aclanthology.org/2025.nodalida-1.62/?utm_source=chatgpt.com
-- **PiFi: Plug-in & Fine-tuning**: Graft a single LLaMA layer after BERT. https://aclanthology.org/2025.acl-long.271/
-- Also tagging this very related blog post shared by Jonathan Jin about a similar topic. https://www.tensorzero.com/blog/fine-tuned-small-llms-can-beat-large-ones-at-5-30x-lower-cost-with-programmatic-data-curation/
+Fine-Tuned Multilingual Models in the LLM Age:** [ACL Anthology](https://aclanthology.org/2025.nodalida-1.62/?utm_source=chatgpt.com)
+- **PiFi: Plug-in & Fine-tuning**: Graft a single LLaMA layer after BERT. [ACL Anthology](https://aclanthology.org/2025.acl-long.271/)
+- Also tagging this very related blog post shared by Jonathan Jin about a similar topic. [ACL Anthology](https://www.tensorzero.com/blog/fine-tuned-small-llms-can-beat-large-ones-at-5-30x-lower-cost-with-programmatic-data-curation/)
 
 ⚠️ But note this pattern has limitations — it doesn’t work on really small models like LLaMA 1B / BERT (models are just too small)!
 
@@ -100,23 +100,23 @@ Fine-Tuned Multilingual Models in the LLM Age:** https://aclanthology.org/2025.n
 
 Tools for researchers + engineers to find papers.
 
-- **Scholar Inbox: Personalized Paper Recommendations for Scientists:**   https://aclanthology.org/2025.acl-demo.30/
-- **PaSa: LLM Agent for Paper Search**: https://aclanthology.org/2025.acl-long.572/
+- **Scholar Inbox: Personalized Paper Recommendations for Scientists:**   [ACL Anthology](https://aclanthology.org/2025.acl-demo.30/)
+- **PaSa: LLM Agent for Paper Search**: [ACL Anthology](https://aclanthology.org/2025.acl-long.572/)
 
 ---
 
 ## Evaluation
 
-- **Can External Validation Tools Improve LLM-as-a-Judge?** (Apple): Tool-assisted judging improves annotation quality versus pure LLM-judges. Maybe useful for LLM-as-a-Judge pipelines. https://aclanthology.org/2025.acl-long.779/
-- **Is That Your Final Answer? Test-Time Scaling for Selective QA**: https://aclanthology.org/2025.acl-short.50/
+- **Can External Validation Tools Improve LLM-as-a-Judge?** (Apple): Tool-assisted judging improves annotation quality versus pure LLM-judges. Maybe useful for LLM-as-a-Judge pipelines. [ACL Anthology](https://aclanthology.org/2025.acl-long.779/)
+- **Is That Your Final Answer? Test-Time Scaling for Selective QA**: [ACL Anthology](https://aclanthology.org/2025.acl-short.50/)
 
 ---
 
 ## 😎 Random interesting stuff 🆒
 
-- 🐶 **Toward Automatic Discovery of a Canine Phonetic Alphabet** 🐶https://aclanthology.org/2025.acl-long.451.pdf
+- 🐶 **Toward Automatic Discovery of a Canine Phonetic Alphabet** 🐶 [ACL Anthology](https://aclanthology.org/2025.acl-long.451.pdf)
 - **Multi-Hop Reasoning for Question Answering with Hyperbolic Representations**: non-Euclidian geometry in ML! `Our findings suggest that hyperbolic representations can be significantly more advantageous when the datasets exhibit a more hierarchical
-structure.` https://aclanthology.org/2025.findings-acl.908/
+structure.` [ACL Anthology](https://aclanthology.org/2025.findings-acl.908/)
 - ★ **HotelMatch-LLM: Joint Multi-Task Training of Small and Large Language Models for Efficient Multimodal Hotel Retrieval**: Asymmetric dense retrieval—SLM for live queries, LLM for document embeddings—delivers efficient natural-language hotel search. Effectively an application of semantic search. [ACL Anthology](https://aclanthology.org/2025.acl-long.30/)
     - I spoke with the authors, they were nice and offered to chat if we reached out!
-- **Tunable LLM-based Proactive Recommendation Agent**: Actor-Critic agent that proactively explores user interests and optimizes long-term rewards. https://aclanthology.org/2025.acl-long.944/
+- **Tunable LLM-based Proactive Recommendation Agent**: Actor-Critic agent that proactively explores user interests and optimizes long-term rewards. [ACL Anthology](https://aclanthology.org/2025.acl-long.944/)[ACL Anthology](
