@@ -45,9 +45,7 @@ How can we keep scaling and make it affordable to do so? Faster fine-tunes, long
 - ★ **ModernBERT — Smarter, Better, Faster, Longer**: A modernized encoder-only model with strong gains over classic BERT (longer context, better downstream, faster). [Answer.ai / Jeremy Howard] [ACL Anthology](https://aclanthology.org/2025.acl-long.127/)
 - ★ **Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention** (**ACL Best Paper Award**) [Deepseek, although is this work already old news?] [ACL Anthology](https://aclanthology.org/2025.acl-long.1126/)
 - **Byte Latent Transformer (BLT) Patches Scale Better Than Tokens**: Tokenizer-free — BLT encodes bytes into dynamically sized patches, which serve as the primary units of computation. Patches are segmented based on the entropy of the next byte, allocating more compute and model capacity where increased data complexity demands it. … BLT shows significantly better scaling than tokenization-based models [Meta. Keynote from [Luke Zettlemoyer](https://scholar.google.com/citations?user=UjpbO6IAAAAJ&hl=en) implied this might be a future direction for LLaMA?]
-[ACL Anthology](https://aclanthology.org/2025.acl-long.453/). Here’s an image that kinda explains it:
-
-    ![image.png](ACL%202025%20Reflections%2025c106a9324280728e43e5d01c17d9f6/image.png)
+[ACL Anthology](https://aclanthology.org/2025.acl-long.453/).
 
 - **Run LoRA Run**: Practical LoRA implementation tricks that speed up fine-tuning by 10-28% without hurting accuracy. [ACL Anthology](https://aclanthology.org/2025.acl-industry.15/)
 
