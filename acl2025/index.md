@@ -66,7 +66,7 @@ Agents are still pretty hot. Agent calling and using tool calls were themes duri
 - [**Chris Manning presentation - LinkedIn**](https://www.linkedin.com/posts/gaurikholkar_full-house-at-chris-mannings-talk-on-linguistic-activity-7356666193107107840-JxkY/)
 - **NNetNav**: Unsupervised browser agents that learn via in-the-wild interaction; this feels like the tech behind the recently released [Claude for Chrome](https://www.anthropic.com/news/claude-for-chrome). [presented by Christoper Manning] [Arxiv](https://arxiv.org/abs/2410.02907)
 - [**Synthetic Data Generation & Multi-Step RL for Reasoning + Tool Use**, Anna Goldie](https://arxiv.org/abs/2504.04736) - not from ACL actually but interesting nonetheless!
-- ★ [**Automating AI Research: How Far Are We?**(http://iclr.cc/virtual/2025/37268) Roberta Raileanu, Google
+- ★ [**Automating AI Research: How Far Are We?**](http://iclr.cc/virtual/2025/37268) Roberta Raileanu, Google
 
 ---
 
@@ -74,7 +74,7 @@ Agents are still pretty hot. Agent calling and using tool calls were themes duri
 
 Can we automate prompt engineering? How do we get observability into LLM’s?
 
-- ★ **PromptWizard**: **Optimizing Prompts via Task-Aware, Feedback-Driven Self Evolution:** fully automated framework for discrete prompt optimization, utilizing a self evolving, self-adapting mechanism. [Microsoft] [ACL Anthology(https://aclanthology.org/2025.findings-acl.1025/)
+- ★ **PromptWizard**: **Optimizing Prompts via Task-Aware, Feedback-Driven Self Evolution:** fully automated framework for discrete prompt optimization, utilizing a self evolving, self-adapting mechanism. [Microsoft] [ACL Anthology](https://aclanthology.org/2025.findings-acl.1025/)
 - **SCULPT: Systematic Tuning of Long Prompts:** Structured tuning for *very long* prompts—systematic ways to adjust and compress long prompt scaffolds. [ACL Anthology](https://aclanthology.org/2025.acl-long.730/)
 - **MExGen Multi-Level Explanations for Generative Language Models:** Multi-level explanations that attribute generated outputs to parts of the context; extends SHAP ideas to LLM generation. [ACL Anthology](https://aclanthology.org/2025.acl-long.1553.pdf)
 
@@ -118,5 +118,4 @@ Tools for researchers + engineers to find papers.
 - **Multi-Hop Reasoning for Question Answering with Hyperbolic Representations**: non-Euclidian geometry in ML! `Our findings suggest that hyperbolic representations can be significantly more advantageous when the datasets exhibit a more hierarchical
 structure.` [ACL Anthology](https://aclanthology.org/2025.findings-acl.908/)
 - ★ **HotelMatch-LLM: Joint Multi-Task Training of Small and Large Language Models for Efficient Multimodal Hotel Retrieval**: Asymmetric dense retrieval—SLM for live queries, LLM for document embeddings—delivers efficient natural-language hotel search. Effectively an application of semantic search. [ACL Anthology](https://aclanthology.org/2025.acl-long.30/)
-    - I spoke with the authors, they were nice and offered to chat if we reached out!
-- **Tunable LLM-based Proactive Recommendation Agent**: Actor-Critic agent that proactively explores user interests and optimizes long-term rewards. [ACL Anthology](https://aclanthology.org/2025.acl-long.944/)[ACL Anthology](
+- **Tunable LLM-based Proactive Recommendation Agent**: Actor-Critic agent that proactively explores user interests and optimizes long-term rewards. [ACL Anthology](https://aclanthology.org/2025.acl-long.944/)
