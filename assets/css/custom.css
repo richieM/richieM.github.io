@@ -1,4 +1,5 @@
-/* Hide the top header link */
-.site-header a.site-title {
+/* Hide the top header/nav bar but keep Markdown styling */
+.site-header,
+.site-nav {
     display: none;
 }
