@@ -1,0 +1,4 @@
+/* Hide the top header link */
+.site-header a.site-title {
+    display: none;
+}
