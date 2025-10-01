@@ -15,3 +15,14 @@ body {
 footer {
     margin: 50px 0;
 }
+
+.portfolio-placeholder {
+  width: 100%;
+  height: 100px;         /* fixed height */
+  background: #ccc;      /* gray color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 1.2em;
+}
