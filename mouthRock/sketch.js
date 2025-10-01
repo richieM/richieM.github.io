@@ -54,7 +54,7 @@ let browsStartKey = 151;
 let startPointX;
 let startPointY;
 
-let howManyBubbles = 30;
+let howManyBubbles = 60;
 let bubbleFrameLife = 60;
 
 let TRANS_LOWER_INCR = 5;
@@ -100,10 +100,10 @@ const mainSketchRichie = (p) => {
     p.image(cam, cam.width, 0, -cam.width, cam.height);
     p.pop();
 
-    p.textSize(100);
+    p.textSize(150);
     p.fill(0);
-    p.text("MOUTH ROCK!", 50, 100)
-    p.text('Open mouth! Blink each eye! Raise eyebrows!', 50, 300);
+    p.text("MOUTH ROCK!", 50, 150)
+    p.text('Open mouth!\nBlink each eye!\nRaise eyebrows!', 50, 350);
 
     let startTimeMs = performance.now();
     if (lastVideoTime !== cam.elt.currentTime) {
@@ -344,7 +344,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
   }
 
   // BROW
-  if (browInnerUp > 0.75 && !browInnerUpAlready) {
+  if (browInnerUp > 0.50 && !browInnerUpAlready) {
     startPointX = faceLandmarks.faceLandmarks[0][browsStartKey].x * W;
     startPointY = faceLandmarks.faceLandmarks[0][browsStartKey].y * H;
     for (let i = 0; i < howManyBubbles; i++) {
@@ -356,7 +356,7 @@ function drawRichieCustom1(p, faceLandmarks, norm, jawOpen, eyeBlinkLeft, eyeBli
     eyebrowSound.play();
     //synth.triggerAttackRelease("C3", "8n");
     browInnerUpAlready = true
-  } else if (browInnerUp < 0.5 && browInnerUpAlready) { // RESET STATE
+  } else if (browInnerUp < 0.3 && browInnerUpAlready) { // RESET STATE
     eyebrowSound.stop()
     browInnerUpAlready = false
   }
