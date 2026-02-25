@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Podcast Search & Discovery - Apple Podcasts">
+    <meta name="author" content="Richie Mendelsohn">
+
+    <title>Podcast Search & Discovery | Richie Mendelsohn</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../css/3-col-portfolio.css" rel="stylesheet">
+
+    <style>
+        .content { max-width: 800px; }
+        .content h2 { margin-top: 35px; color: #64b5f6; }
+        .content ul { margin-bottom: 20px; }
+        .content li { margin-bottom: 8px; line-height: 1.6; }
+        .role-header { color: #90caf9; font-size: 0.9em; margin-bottom: 5px; }
+        .blog-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 20px;
+            background: #2a2a3e;
+            border-radius: 4px;
+            color: #64b5f6;
+            text-decoration: none;
+        }
+        .blog-link:hover {
+            background: #3a3a4e;
+            color: #90caf9;
+            text-decoration: none;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">Richie Mendelsohn</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="https://www.linkedin.com/in/richiemendelsohn" target="_blank">LinkedIn</a>
+                    </li>
+                    <li>
+                        <a href="http://www.github.com/richiem" target="_blank">GitHub</a>
+                    </li>
+                    <li>
+                        <a href="../resume.pdf" target="_blank">Resume</a>
+                    </li>
+                    <li>
+                        <a href="../about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="../creative.html">Creative Projects</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12 content">
+                <h1 class="page-header">Podcast Search & Discovery</h1>
+
+                <p class="lead">From startup to scale: building podcast discovery systems at Audiosear.ch/Pop Up Archive, then scaling them to millions of users at Apple Podcasts.</p>
+
+                <h2>Audiosear.ch / Pop Up Archive (2016–2017)</h2>
+                <p class="role-header">Founding ML Researcher · Oakland, CA</p>
+
+                <p>I led ML at a podcast discovery startup focused on making audio searchable and discoverable. The core challenge: how do you help listeners find podcasts when there are hundreds of thousands of shows and most discovery happens through word-of-mouth?</p>
+
+                <p>My approach was to use unsupervised topic modeling (LDA) on podcast transcripts to automatically cluster and organize content. This extracted 80+ coherent topics from 40k+ podcasts, enabling topic-based browsing and content-based recommendations that could surface the long-tail of great podcast content.</p>
+
+                <h3>Interactive Visualizations</h3>
+
+                <p><strong>Episodes by Topic:</strong> Each dot is a podcast episode, colored and clustered by its dominant topic.</p>
+                <iframe src="../puaViz/byEpisode/" width="100%" height="700" frameborder="0" style="border-radius: 4px; background: #fff;"></iframe>
+
+                <p style="margin-top: 25px;"><strong>Shows by Topic:</strong> Each dot is a podcast show, positioned by its topic distribution.</p>
+                <iframe src="../puaViz/byShow/" width="100%" height="700" frameborder="0" style="border-radius: 4px; background: #fff;"></iframe>
+
+                <p style="margin-top: 25px;"><strong>Comparing Topics:</strong> Explore relationships between different topic clusters.</p>
+                <iframe src="../puaViz/comparingTopics/" width="100%" height="500" frameborder="0" style="border-radius: 4px; background: #fff;"></iframe>
+
+                <a href="../podcasts/" class="blog-link" style="margin-top: 25px;">Read the full blog post →</a>
+
+                <h2>Apple Podcasts (2017–2021)</h2>
+                <p class="role-header">Senior Machine Learning Engineer · San Francisco, CA</p>
+
+                <p>Pop Up Archive was acquired by Apple in 2017. At Apple, I worked on search and recommendations for Apple Podcasts, scaling the ideas from the startup to millions of users:</p>
+
+                <ul>
+                    <li>Launched topic-based semantic search and content classification across millions of podcasts</li>
+                    <li>Built topic-based recommendation carousels for personalized content discovery</li>
+                    <li>Built toxic content classifiers using BERT text embeddings</li>
+                    <li>Trained seq2seq models for punctuation prediction on ASR output</li>
+                    <li>Built audio classification and embedding pipelines</li>
+                </ul>
+
+                <hr>
+
+                <p><a href="../index.html">← Back to Home</a></p>
+            </div>
+        </div>
+
+        <hr>
+
+        
+    </div>
+
+    <!-- jQuery -->
+    <script src="../js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

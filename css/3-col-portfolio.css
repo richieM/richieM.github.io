@@ -4,12 +4,56 @@
  * For details, see http://www.apache.org/licenses/LICENSE-2.0.
  */
 
+/* Dark mode */
 body {
-    padding-top: 70px; /* Required padding for .navbar-fixed-top. Remove if using .navbar-static-top. Change if height of navigation changes. */
+    padding-top: 70px;
+    background-color: #1a1a2e;
+    color: #eaeaea;
+}
+
+a {
+    color: #64b5f6;
+}
+
+a:hover {
+    color: #90caf9;
+}
+
+.page-header {
+    border-bottom-color: #333;
+}
+
+.lead {
+    color: #c0c0c0;
+}
+
+h3 a {
+    color: #64b5f6;
+}
+
+h3 a:hover {
+    color: #90caf9;
+    text-decoration: none;
+}
+
+p {
+    color: #b0b0b0;
+}
+
+hr {
+    border-top-color: #333;
 }
 
 .portfolio-item {
     margin-bottom: 25px;
+}
+
+.portfolio-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: contain;
+    background: #2a2a3e;
+    border-radius: 4px;
 }
 
 footer {
@@ -18,11 +62,12 @@ footer {
 
 .portfolio-placeholder {
   width: 100%;
-  height: 100px;         /* fixed height */
-  background: #ccc;      /* gray color */
+  height: 200px;
+  background: #2a2a3e;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #333;
+  color: #eaeaea;
   font-size: 1.2em;
+  border-radius: 4px;
 }

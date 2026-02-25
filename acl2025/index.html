@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ACL 2025 Reflections">
+    <meta name="author" content="Richie Mendelsohn">
+
+    <title>ACL 2025 Reflections | Richie Mendelsohn</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../css/3-col-portfolio.css" rel="stylesheet">
+
+    <style>
+        .content { max-width: 800px; }
+        .content h1 { margin-top: 40px; }
+        .content h2 { margin-top: 30px; color: #64b5f6; }
+        .content h3 { margin-top: 25px; }
+        .content ul { margin-bottom: 20px; }
+        .content li { margin-bottom: 10px; }
+        .content code { background: #2a2a3e; padding: 2px 6px; border-radius: 3px; }
+        .content hr { border-top-color: #444; margin: 30px 0; }
+        .content blockquote { border-left: 3px solid #64b5f6; padding-left: 15px; color: #b0b0b0; }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">Richie Mendelsohn</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="https://www.linkedin.com/in/richiemendelsohn" target="_blank">LinkedIn</a>
+                    </li>
+                    <li>
+                        <a href="http://www.github.com/richiem" target="_blank">GitHub</a>
+                    </li>
+                    <li>
+                        <a href="../resume.pdf" target="_blank">Resume</a>
+                    </li>
+                    <li>
+                        <a href="../about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="../creative.html">Creative Projects</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-12 content">
+                <h1 class="page-header">ACL 2025 Reflections</h1>
+
+                <p class="lead">I wanted to share some reflections and ideas from <a href="https://2025.aclweb.org/">ACL 2025</a> Conference (Association for Computation Linguistics), a machine-learning conference focused on text understanding.</p>
+
+                <h1>Overall Reflections</h1>
+
+                <p>Academically-inclined ML conferences can feel like a music festival (whoops, did I go to the <a href="https://www.aclfestival.com/">wrong ACL</a>?!) — you can get burned out after three days, especially if you give into your FOMO and try to see everything and just end up running from stage to stage and miss it all. But here's what I did see!</p>
+
+                <h2>LLM everything</h2>
+
+                <p>Pardon me, but have you heard about this thing called AI? Or how about this thing called an "LLM"? LLM's totally dominated the conference. From the keynote:</p>
+
+                <p><code>67% of papers have "LLM" in their title/abstract</code></p>
+
+                <h2>Benchmarks (+ skepticism of them)</h2>
+
+                <p>A lot of focus was put on benchmarking existing SOTA models through various tasks and datasets. It seems that broadly there is an inherent skepticism of existing benchmarks and evaluations for LLMs as there has been a lot of data leakage, hyper-parameter gaming, few shot prompting over-optimization, etc, that has led to people not being able to trust reported results.</p>
+
+                <p>I was surprised by how much work was focused on simply evaluating these foundational models on various tasks and biases and measuring this bias, rather than understanding the root sources of the bias or proposing solutions.</p>
+
+                <h2>Academia vs Industry // Foundational Models vs Small Players</h2>
+
+                <p>The majority of folks at the conference seemed to be coming from academia and university associations, maybe two-thirds attendees from academia I would estimate.</p>
+
+                <p>Shifts in the political climate in the US were discussed and how that's leading to less grant money.</p>
+
+                <p>Regardless of whether someone is in academia or industry, we all seem to be beholden to the Big Companies who are training foundational models, most importantly because the smaller groups simply do not have enough computational resources available to compete.</p>
+
+                <p>There was also an under-current of tension throughout the conference between the more classical computational linguistics approach to NLP, and the new guard of "just throw an LLM at it". Some dismay was expressed at the over-focus on solely LLM performance and benchmarking without the fundamental understandings of what these LLM's are doing.</p>
+
+                <hr>
+
+                <h1>Interesting Papers (by theme)</h1>
+
+                <p>Here are the broad themes I noticed and some posters/papers I saw that looked cool.</p>
+
+                <p>(Also, here's a link to all the <a href="https://2025.aclweb.org/program/awards/">official conference's voted best papers</a>.)</p>
+
+                <p><em>★ for especially interesting papers/posters</em></p>
+
+                <h2>Architectures & Efficiency</h2>
+
+                <p>How can we keep scaling and make it affordable to do so? Faster fine-tunes, longer context windows, and tokenization alternatives.</p>
+
+                <ul>
+                    <li>★ <strong>ModernBERT — Smarter, Better, Faster, Longer</strong>: A modernized encoder-only model with strong gains over classic BERT (longer context, better downstream, faster). [Answer.ai / Jeremy Howard] <a href="https://aclanthology.org/2025.acl-long.127/">ACL Anthology</a></li>
+                    <li>★ <strong>Native Sparse Attention: Hardware-Aligned and Natively Trainable Sparse Attention</strong> (<strong>ACL Best Paper Award</strong>) [Deepseek] <a href="https://aclanthology.org/2025.acl-long.1126/">ACL Anthology</a></li>
+                    <li><strong>Byte Latent Transformer (BLT) Patches Scale Better Than Tokens</strong>: Tokenizer-free — BLT encodes bytes into dynamically sized patches. [Meta] <a href="https://aclanthology.org/2025.acl-long.453/">ACL Anthology</a></li>
+                    <li><strong>Run LoRA Run</strong>: Practical LoRA implementation tricks that speed up fine-tuning by 10-28% without hurting accuracy. <a href="https://aclanthology.org/2025.acl-industry.15/">ACL Anthology</a></li>
+                </ul>
+
+                <h2>Alignment & Bias</h2>
+
+                <ul>
+                    <li>★ <strong>Aligned but Blind: Alignment Increases Implicit Bias by Reducing Awareness of Race</strong>: Alignment surprisingly amplifies implicit bias in model outputs. <a href="https://aclanthology.org/2025.acl-long.1078/">ACL Anthology</a></li>
+                    <li><strong>Fairness through Difference Awareness</strong>: Introduces a metric for <em>desired</em> group discrimination when some differential treatment is actually the goal. (<strong>ACL Best Paper Award</strong>) <a href="https://aclanthology.org/2025.acl-long.341/">ACL Anthology</a></li>
+                    <li><strong>Language Models Resist Alignment: Evidence from Data Compression</strong>: Evidence that alignment doesn't fully overwrite pretraining. (<strong>ACL Best Paper Winner</strong>) <a href="https://aclanthology.org/2025.acl-long.1141/">ACL Anthology</a></li>
+                </ul>
+
+                <h2>Agents (+ REALM workshop)</h2>
+
+                <p>Agents are still pretty hot. Agent calling and using tool calls were themes during the Thursday workshop on Agents — <a href="https://realm-workshop.github.io/">REALM (Research on Agent Language Models) Workshop</a></p>
+
+                <ul>
+                    <li><a href="https://www.linkedin.com/posts/gaurikholkar_full-house-at-chris-mannings-talk-on-linguistic-activity-7356666193107107840-JxkY/">Chris Manning presentation - LinkedIn</a></li>
+                    <li><strong>NNetNav</strong>: Unsupervised browser agents that learn via in-the-wild interaction. <a href="https://arxiv.org/abs/2410.02907">Arxiv</a></li>
+                    <li><a href="https://arxiv.org/abs/2504.04736">Synthetic Data Generation & Multi-Step RL for Reasoning + Tool Use</a>, Anna Goldie</li>
+                    <li>★ <a href="http://iclr.cc/virtual/2025/37268">Automating AI Research: How Far Are We?</a> Roberta Raileanu, Google</li>
+                </ul>
+
+                <h2>Prompting, and the automation of it</h2>
+
+                <p>Can we automate prompt engineering? How do we get observability into LLM's?</p>
+
+                <ul>
+                    <li>★ <strong>PromptWizard: Optimizing Prompts via Task-Aware, Feedback-Driven Self Evolution</strong>: Fully automated framework for discrete prompt optimization. [Microsoft] <a href="https://aclanthology.org/2025.findings-acl.1025/">ACL Anthology</a></li>
+                    <li><strong>SCULPT: Systematic Tuning of Long Prompts</strong>: Structured tuning for very long prompts. <a href="https://aclanthology.org/2025.acl-long.730/">ACL Anthology</a></li>
+                    <li><strong>MExGen Multi-Level Explanations for Generative Language Models</strong>: Multi-level explanations that attribute generated outputs to parts of the context. <a href="https://aclanthology.org/2025.acl-long.1553.pdf">ACL Anthology</a></li>
+                </ul>
+
+                <h2>SLM ↔ LLM in Practice (where smaller models win)</h2>
+
+                <p>Pattern: Use a foundational model to generate synthetic data → fine tune a LLaMA ~8B model → achieve same performance as few-shotting on the foundational model</p>
+
+                <ul>
+                    <li><strong>TOOLFLOW: Boosting LLM Tool-Calling Through Natural and Coherent Dialogue Synthesis</strong>: LLaMA3.1-8B achieves tool-calling performance comparable to or even surpassing GPT-4. <a href="https://aclanthology.org/2025.naacl-long.214/">ACL Anthology</a></li>
+                    <li><strong>Rethinking Low-Resource MT</strong>: The Surprising Effectiveness of Fine-Tuned Multilingual Models in the LLM Age. <a href="https://aclanthology.org/2025.nodalida-1.62/">ACL Anthology</a></li>
+                    <li><strong>PiFi: Plug-in & Fine-tuning</strong>: Graft a single LLaMA layer after BERT. <a href="https://aclanthology.org/2025.acl-long.271/">ACL Anthology</a></li>
+                </ul>
+
+                <p>⚠️ But note this pattern has limitations — it doesn't work on really small models like LLaMA 1B / BERT (models are just too small)!</p>
+
+                <h2>Tools for Researchers</h2>
+
+                <ul>
+                    <li><strong>Scholar Inbox: Personalized Paper Recommendations for Scientists</strong>: <a href="https://aclanthology.org/2025.acl-demo.30/">ACL Anthology</a></li>
+                    <li><strong>PaSa: LLM Agent for Paper Search</strong>: <a href="https://aclanthology.org/2025.acl-long.572/">ACL Anthology</a></li>
+                </ul>
+
+                <h2>Evaluation</h2>
+
+                <ul>
+                    <li><strong>Can External Validation Tools Improve LLM-as-a-Judge?</strong> (Apple): Tool-assisted judging improves annotation quality versus pure LLM-judges. <a href="https://aclanthology.org/2025.acl-long.779/">ACL Anthology</a></li>
+                    <li><strong>Is That Your Final Answer? Test-Time Scaling for Selective QA</strong>: <a href="https://aclanthology.org/2025.acl-short.50/">ACL Anthology</a></li>
+                </ul>
+
+                <h2>Random interesting stuff</h2>
+
+                <ul>
+                    <li><strong>Toward Automatic Discovery of a Canine Phonetic Alphabet</strong> <a href="https://aclanthology.org/2025.acl-long.451.pdf">ACL Anthology</a></li>
+                    <li><strong>Multi-Hop Reasoning for Question Answering with Hyperbolic Representations</strong>: Non-Euclidian geometry in ML! <a href="https://aclanthology.org/2025.findings-acl.908/">ACL Anthology</a></li>
+                    <li>★ <strong>HotelMatch-LLM</strong>: Asymmetric dense retrieval—SLM for live queries, LLM for document embeddings. <a href="https://aclanthology.org/2025.acl-long.30/">ACL Anthology</a></li>
+                    <li><strong>Tunable LLM-based Proactive Recommendation Agent</strong>: Actor-Critic agent that proactively explores user interests. <a href="https://aclanthology.org/2025.acl-long.944/">ACL Anthology</a></li>
+                </ul>
+
+                <hr>
+
+                <p><a href="../index.html">← Back to Home</a></p>
+            </div>
+        </div>
+
+        <hr>
+
+        
+    </div>
+
+    <!-- jQuery -->
+    <script src="../js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
