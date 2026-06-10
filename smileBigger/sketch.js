@@ -1,27 +1,51 @@
-// SMILE BIGGER — a one-trick mobile sketch.
+// SMILE BIGGER — a secret facial-expression combo lock for mobile.
 //
-// Point the front camera at your face. The screen yells "SMILE BIGGER!!!"
-// until you grin hard enough (and aren't frowning). Hold a HUGE smile for a
-// beat and the screen erupts in confetti and reveals the secret instruction:
-// "GO TO THE FOURTH ELEVATOR".
+// Point the front camera at your face and perform the sequence IN ORDER:
+//     1. wink your LEFT eye
+//     2. wink your RIGHT eye
+//     3. big FROWN
+//     4. HUGE smile
+// Nail all four (returning to a neutral face between each) and the screen
+// erupts in confetti and reveals the secret: "GO TO THE FOURTH ELEVATOR".
 //
-// Smile detection rides on MediaPipe FaceLandmarker blendshapes — the same
-// approach as ../mouthRock — using mouthSmile{Left,Right} for the grin and
-// mouthFrown{Left,Right} to veto a sad face. Confetti is a simple particle
-// burst, in the spirit of mouthRock's bubble outpouring.
+// All detection rides on MediaPipe FaceLandmarker blendshapes (same engine as
+// ../mouthRock): eyeBlink{Left,Right}, mouthFrown{Left,Right},
+// mouthSmile{Left,Right}. Confetti is a simple particle burst.
 
 import {
   FaceLandmarker,
   FilesetResolver,
 } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js";
 
-// --- smile thresholds ------------------------------------------------------
-// Blendshape scores run 0..1. A relaxed face sits near 0; a polite smile is
-// ~0.3-0.5; a big toothy grin pushes past 0.7. Tune SMILE_TARGET if it feels
-// too easy / too hard on your device.
-const SMILE_TARGET = 0.97; // average of left+right smile needed to win — MAXIMUM grin
-const FROWN_VETO = 0.25; // above this we treat the face as "sad" — no win
-const HOLD_FRAMES = 60; // ~1s of sustained huge smile before celebrating
+// --- detection thresholds (blendshape scores run 0..1) ---------------------
+const BLINK_ON = 0.3; // a winking eye must exceed this...
+const BLINK_GAP = 0.12; // ...while the OTHER eye stays at least this much lower
+const BROW_ON = 0.4; // furrowed/angry brow ("frown")
+const SMILE_ON = 0.92; // HUGE smile
+const HOLD_FRAMES = 8; // frames a step's expression must persist (~0.13s)
+
+// Set true to show a live readout of the raw scores (handy for tuning).
+const DEBUG = false;
+
+// The combo, in order. Each test receives the smoothed scores object.
+const STEPS = [
+  {
+    label: "WINK YOUR\nLEFT EYE 😉",
+    test: (s) => s.blinkLeft > BLINK_ON && s.blinkLeft - s.blinkRight > BLINK_GAP,
+  },
+  {
+    label: "NOW WINK YOUR\nRIGHT EYE 😉",
+    test: (s) => s.blinkRight > BLINK_ON && s.blinkRight - s.blinkLeft > BLINK_GAP,
+  },
+  {
+    label: "NOW MAKE AN\nANGRY FACE! 😠\n(furrow your brow)",
+    test: (s) => s.browDown > BROW_ON,
+  },
+  {
+    label: "NOW SMILE\nHUGE!!! 😁",
+    test: (s) => s.smile > SMILE_ON,
+  },
+];
 
 let cam;
 let canv;
@@ -29,9 +53,19 @@ let faceLandmarker;
 let lastVideoTime = -1;
 let faceResults;
 
-let smileScore = 0; // smoothed 0..1
-let frownScore = 0; // smoothed 0..1
-let holdCounter = 0;
+// smoothed scores
+let scores = {
+  blinkLeft: 0,
+  blinkRight: 0,
+  frown: 0,
+  browDown: 0,
+  browUp: 0,
+  jaw: 0,
+  smile: 0,
+};
+
+let stepIndex = 0; // which step we're waiting on
+let holdCounter = 0; // frames the current step's expression has held
 let celebrating = false;
 let celebrationStart = 0;
 
@@ -40,86 +74,116 @@ let confetti = [];
 const sketch = (p) => {
   p.setup = () => {
     canv = p.createCanvas(p.windowWidth, p.windowHeight);
-
-    // Front camera, mobile friendly. Constraints object lets us request the
-    // selfie cam directly instead of whatever default createCapture picks.
     cam = p.createCapture(
       { video: { facingMode: "user" }, audio: false },
       () => cam.hide()
     );
     cam.hide();
-
     p.textFont("Arial");
     p.textAlign(p.CENTER, p.CENTER);
     p.frameRate(60);
   };
 
-  p.windowResized = () => {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
+  p.windowResized = () => p.resizeCanvas(p.windowWidth, p.windowHeight);
+
+  // Tap anywhere to restart the combo.
+  p.mousePressed = () => {
+    resetCombo();
+    return false;
+  };
+  p.touchStarted = () => {
+    resetCombo();
+    return false;
   };
 
   p.draw = () => {
     p.background(0);
-
     drawMirroredCamera(p);
 
-    // Run face detection on each new camera frame.
-    if (faceLandmarker && cam.elt.readyState >= 2 && cam.elt.currentTime !== lastVideoTime) {
+    if (
+      faceLandmarker &&
+      cam.elt.readyState >= 2 &&
+      cam.elt.currentTime !== lastVideoTime
+    ) {
       lastVideoTime = cam.elt.currentTime;
       faceResults = faceLandmarker.detectForVideo(cam.elt, performance.now());
     }
 
     updateScores();
+    if (!celebrating) advanceCombo(p);
 
-    if (!celebrating && smileScore >= SMILE_TARGET && frownScore < FROWN_VETO) {
-      holdCounter++;
-      if (holdCounter >= HOLD_FRAMES) startCelebration(p);
-    } else if (!celebrating) {
-      holdCounter = 0;
-    }
-
-    if (celebrating) {
-      drawCelebration(p);
-    } else {
-      drawNagging(p);
-    }
+    if (celebrating) drawCelebration(p);
+    else drawComboUI(p);
   };
 };
 
-// Draw the webcam mirrored (selfie view) and scaled to cover the screen,
-// so it fills a portrait phone regardless of the camera's native aspect.
+function resetCombo() {
+  if (celebrating) return; // let the party run
+  stepIndex = 0;
+  holdCounter = 0;
+}
+
+// Walk the state machine one frame.
+function advanceCombo(p) {
+  const faceFound = !!faceResults?.faceBlendshapes?.length;
+  if (!faceFound) {
+    holdCounter = 0;
+    return;
+  }
+
+  const step = STEPS[stepIndex];
+  if (step.test(scores)) {
+    holdCounter++;
+    if (holdCounter >= HOLD_FRAMES) {
+      holdCounter = 0;
+      stepIndex++;
+      if (stepIndex >= STEPS.length) startCelebration(p);
+    }
+  } else {
+    holdCounter = 0;
+  }
+}
+
 function drawMirroredCamera(p) {
   const vw = cam.elt.videoWidth;
   const vh = cam.elt.videoHeight;
   if (!vw || !vh) return;
-
   const scale = Math.max(p.width / vw, p.height / vh);
   const dw = vw * scale;
   const dh = vh * scale;
   const dx = (p.width - dw) / 2;
-
   p.push();
   p.translate(p.width, 0);
-  p.scale(-1, 1); // mirror horizontally
+  p.scale(-1, 1);
   p.image(cam, p.width - dx - dw, (p.height - dh) / 2, dw, dh);
   p.pop();
 }
 
-// Smooth the raw blendshape scores so the UI doesn't flicker frame-to-frame.
 function updateScores() {
-  let rawSmile = 0;
-  let rawFrown = 0;
-
+  let raw = {
+    blinkLeft: 0,
+    blinkRight: 0,
+    frown: 0,
+    browDown: 0,
+    browUp: 0,
+    jaw: 0,
+    smile: 0,
+  };
   const cats = faceResults?.faceBlendshapes?.[0]?.categories;
   if (cats) {
     const get = (name) => cats.find((c) => c.categoryName === name)?.score ?? 0;
-    rawSmile = (get("mouthSmileLeft") + get("mouthSmileRight")) / 2;
-    rawFrown = (get("mouthFrownLeft") + get("mouthFrownRight")) / 2;
+    raw.blinkLeft = get("eyeBlinkLeft");
+    raw.blinkRight = get("eyeBlinkRight");
+    raw.frown = (get("mouthFrownLeft") + get("mouthFrownRight")) / 2;
+    raw.browDown = (get("browDownLeft") + get("browDownRight")) / 2;
+    raw.browUp = get("browInnerUp");
+    raw.jaw = get("jawOpen");
+    raw.smile = (get("mouthSmileLeft") + get("mouthSmileRight")) / 2;
   }
-
-  // exponential smoothing
-  smileScore += (rawSmile - smileScore) * 0.3;
-  frownScore += (rawFrown - frownScore) * 0.3;
+  // Light smoothing — responsive enough for quick winks, steady enough to not
+  // flicker the UI.
+  const k = 0.45;
+  for (const key in scores) scores[key] += (raw[key] - scores[key]) * k;
 }
 
 function startCelebration(p) {
@@ -129,87 +193,115 @@ function startCelebration(p) {
 }
 
 // ---------------------------------------------------------------------------
-// "SMILE BIGGER" nag screen
+// Combo UI (the "locked" state)
 // ---------------------------------------------------------------------------
-function drawNagging(p) {
+function drawComboUI(p) {
   const faceFound = !!faceResults?.faceBlendshapes?.length;
-
-  // Pulsing red overlay that intensifies the closer you get to the target.
-  const progress = p.constrain(smileScore / SMILE_TARGET, 0, 1);
-  const pulse = (p.sin(p.frameCount * 0.25) + 1) / 2;
-  p.noStroke();
-  p.fill(200, 30, 30, 90 + 60 * pulse);
-  p.rect(0, 0, p.width, p.height);
-
   const unit = Math.min(p.width, p.height);
 
+  // subtle dim so text reads over the camera
+  p.noStroke();
+  p.fill(0, 110);
+  p.rect(0, 0, p.width, p.height);
+
+  // headline instruction
   p.fill(255);
   p.stroke(0);
   p.strokeWeight(unit * 0.012);
 
   if (!faceFound) {
     p.textSize(unit * 0.09);
-    p.text("SHOW ME\nYOUR FACE!", p.width / 2, p.height * 0.42);
-  } else if (frownScore >= FROWN_VETO) {
-    p.textSize(unit * 0.13);
-    p.text("DON'T BE SAD!\nSMILE!!!", p.width / 2, p.height * 0.4);
+    p.text("SHOW ME\nYOUR FACE!", p.width / 2, p.height * 0.4);
   } else {
-    // Two big lines that grow as you smile harder.
-    p.textSize(unit * (0.14 + 0.04 * progress));
-    p.text("SMILE BIGGER!!!", p.width / 2, p.height * 0.34);
-    p.textSize(unit * (0.16 + 0.06 * progress));
-    p.text("BIGGER!!!", p.width / 2, p.height * 0.52);
+    p.textSize(unit * 0.11);
+    p.text(STEPS[stepIndex].label, p.width / 2, p.height * 0.38);
   }
 
-  drawSmileMeter(p, progress);
+  drawChecklist(p);
+  if (DEBUG) drawDebug(p);
 }
 
-// A little progress bar at the bottom so the user knows they're getting close.
-function drawSmileMeter(p, progress) {
+// Live readout of the smoothed scores, top-left. Flip DEBUG off for the
+// real install.
+function drawDebug(p) {
   const unit = Math.min(p.width, p.height);
-  const barW = p.width * 0.7;
-  const barH = unit * 0.05;
-  const x = (p.width - barW) / 2;
-  const y = p.height * 0.82;
-
+  p.push();
+  p.textAlign(p.LEFT, p.TOP);
+  p.textSize(unit * 0.04);
   p.noStroke();
-  p.fill(0, 160);
-  p.rect(x - 6, y - 6, barW + 12, barH + 12, barH);
+  const lines = [
+    `blinkL ${scores.blinkLeft.toFixed(2)}`,
+    `blinkR ${scores.blinkRight.toFixed(2)}`,
+    `frown  ${scores.frown.toFixed(2)}`,
+    `browDn ${scores.browDown.toFixed(2)}`,
+    `browUp ${scores.browUp.toFixed(2)}`,
+    `jaw    ${scores.jaw.toFixed(2)}`,
+    `smile  ${scores.smile.toFixed(2)}`,
+  ];
+  p.fill(0, 150);
+  p.rect(6, 6, unit * 0.42, lines.length * unit * 0.05 + unit * 0.02, 8);
+  p.fill(0, 255, 120);
+  lines.forEach((t, i) =>
+    p.text(t, unit * 0.03, unit * 0.03 + i * unit * 0.05)
+  );
+  p.pop();
+}
 
-  p.fill(60);
-  p.rect(x, y, barW, barH, barH);
+// Row of step chips at the bottom: done = green check, current = pulsing, rest = dim.
+function drawChecklist(p) {
+  const unit = Math.min(p.width, p.height);
+  const n = STEPS.length;
+  const chip = unit * 0.16;
+  const gap = unit * 0.04;
+  const totalW = n * chip + (n - 1) * gap;
+  const startX = (p.width - totalW) / 2;
+  const y = p.height * 0.78;
+  const pulse = (p.sin(p.frameCount * 0.2) + 1) / 2;
 
-  // fill turns from red toward green as you approach a huge smile
-  const c = p.lerpColor(p.color(230, 60, 60), p.color(60, 220, 90), progress);
-  p.fill(c);
-  p.rect(x, y, barW * progress, barH, barH);
+  p.textAlign(p.CENTER, p.CENTER);
+  for (let i = 0; i < n; i++) {
+    const x = startX + i * (chip + gap);
+    const done = i < stepIndex;
+    const current = i === stepIndex;
 
-  p.noFill();
-  p.stroke(255);
-  p.strokeWeight(2);
-  p.rect(x, y, barW, barH, barH);
+    p.push();
+    p.noStroke();
+    if (done) p.fill(40, 180, 90);
+    else if (current) p.fill(255, 200 + 40 * pulse, 60);
+    else p.fill(255, 255, 255, 40);
+    p.rect(x, y, chip, chip, chip * 0.22);
+
+    // checkmark when done, otherwise the step number (always fits the chip)
+    p.fill(done ? 255 : 20);
+    if (current && !done) p.fill(40);
+    p.textStyle(p.BOLD);
+    p.textSize(chip * 0.5);
+    p.text(done ? "✓" : i + 1, x + chip / 2, y + chip / 2);
+    p.textStyle(p.NORMAL);
+    p.pop();
+  }
+
+  // tiny restart hint
+  p.noStroke();
+  p.fill(255, 150);
+  p.textSize(unit * 0.035);
+  p.text("tap to restart", p.width / 2, y + chip + unit * 0.05);
 }
 
 // ---------------------------------------------------------------------------
 // Celebration screen
 // ---------------------------------------------------------------------------
 function drawCelebration(p) {
-  // Keep the party going with a steady drizzle of fresh confetti.
   if (p.frameCount % 4 === 0) burstConfetti(p, 14);
-
   updateAndDrawConfetti(p);
 
   const unit = Math.min(p.width, p.height);
   const t = p.frameCount - celebrationStart;
-
-  // Bouncy entrance for the headline.
   const ease = 1 - Math.pow(1 - p.constrain(t / 30, 0, 1), 3);
 
   p.push();
   p.translate(p.width / 2, p.height * 0.45);
   p.scale(ease);
-
-  // dark plate so text stays readable over confetti
   p.noStroke();
   p.fill(0, 170);
   p.rectMode(p.CENTER);
@@ -220,7 +312,7 @@ function drawCelebration(p) {
   p.stroke(0);
   p.strokeWeight(unit * 0.012);
   p.textSize(unit * 0.11);
-  p.text("YESSS!!! 😄", 0, -unit * 0.2);
+  p.text("UNLOCKED!!! 🎉", 0, -unit * 0.2);
 
   p.fill(255);
   p.textSize(unit * 0.085);
@@ -229,7 +321,7 @@ function drawCelebration(p) {
 }
 
 // ---------------------------------------------------------------------------
-// Confetti particles
+// Confetti
 // ---------------------------------------------------------------------------
 const CONFETTI_COLORS = [
   [255, 80, 80],
@@ -257,7 +349,6 @@ function burstConfetti(p, count) {
       phase: p.random(p.TWO_PI),
     });
   }
-  // cap so memory stays bounded on a long-running install
   if (confetti.length > 700) confetti.splice(0, confetti.length - 700);
 }
 
@@ -270,12 +361,10 @@ function updateAndDrawConfetti(p) {
     c.x += c.vx + Math.sin(p.frameCount * c.sway + c.phase) * 1.5;
     c.y += c.vy;
     c.rot += c.spin;
-
     if (c.y > p.height + 40) {
       confetti.splice(i, 1);
       continue;
     }
-
     p.push();
     p.translate(c.x, c.y);
     p.rotate(c.rot);
