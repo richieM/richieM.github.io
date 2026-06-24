@@ -406,6 +406,10 @@ function waitForCameraReady() {
 
 function mousePressed() {
   if (Date.now() - lastCameraButtonPress < 400) return false;
+  // Ignore taps until the camera is live, so the "tap to enable camera"
+  // gesture can't toggle showVideo off and leave us on a blank screen —
+  // the camera should be visible by default once it starts.
+  if (!cam || !cam.ready) return false;
   const here = { x: mouseX, y: mouseY };
   if (clearAt(here)) {
     pg.clear();
