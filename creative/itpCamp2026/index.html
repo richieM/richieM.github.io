@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="ITP Camp 2026 projects - Richie Mendelsohn">
+    <meta name="author" content="Richie Mendelsohn">
+
+    <title>ITP Camp 2026 | Richie Mendelsohn</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="../../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="../../css/3-col-portfolio.css" rel="stylesheet">
+
+    <style>
+        /* bigger, documentation-style cards */
+        .portfolio-item img {
+            height: 320px;
+            object-fit: cover;
+        }
+        .itp-imgs {
+            display: flex;
+            gap: 8px;
+        }
+        .itp-imgs img {
+            flex: 1;
+            min-width: 0;
+        }
+        .portfolio-item .tag {
+            display: inline-block;
+            font-size: 0.72em;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: #8aa;
+            background: #2a2a3e;
+            padding: 2px 8px;
+            border-radius: 999px;
+            margin-bottom: 6px;
+        }
+        .portfolio-placeholder {
+            height: 320px;
+            flex-direction: column;
+            text-align: center;
+            line-height: 1.4;
+        }
+        .portfolio-placeholder small {
+            color: #8a8a9a;
+            font-size: 0.62em;
+            margin-top: 8px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Richie Mendelsohn</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="https://www.linkedin.com/in/richiemendelsohn" target="_blank">LinkedIn</a>
+                    </li>
+                    <li>
+                        <a href="http://www.github.com/richiem" target="_blank">GitHub</a>
+                    </li>
+                    <li>
+                        <a href="../../resume.pdf" target="_blank">Resume</a>
+                    </li>
+                    <li>
+                        <a href="../../about.html">About</a>
+                    </li>
+                    <li>
+                        <a href="../../creative.html">Creative Projects</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">ITP Camp 2026</h1>
+                <p class="lead">a summer of tiny projects &mdash; lasers, cameras, coffee, stickers, and a clingy AI. documenting them before they slip my mind.</p>
+            </div>
+        </div>
+
+        <!-- Row 1 -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <span class="tag">photography &middot; print</span>
+                <div class="itp-imgs">
+                    <img class="img-responsive" src="assets/coffee-grid.jpg" alt="grid of coffee cups from cold brew to milk">
+                    <img class="img-responsive" src="assets/coffee-graph.jpg" alt="graph of surface color vs dilution">
+                </div>
+                <h3>Coffee &rarr; Milk</h3>
+                <p>a cold brew slowly diluted to milk, one cup at a time &mdash; every photo is +1% milk. developed from RAW so the gradient stays honest. made into a poster + a color graph.</p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <span class="tag">computer vision &middot; print</span>
+                <div class="itp-imgs">
+                    <img class="img-responsive" src="assets/stickers-sheet.jpg" alt="sheet of auto-cut stickers">
+                    <img class="img-responsive" src="assets/stickers-cutout.jpg" alt="before/after of a sticker cutout">
+                </div>
+                <h3>Sticker Factory</h3>
+                <p>fed a pile of photos to a segmentation model (FastSAM), auto-cut everything out, and laid hundreds of them into a printable sticker sheet.</p>
+            </div>
+        </div>
+
+        <!-- Row 2 -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <span class="tag">laser cut &middot; accessibility</span>
+                <div class="itp-imgs">
+                    <img class="img-responsive" src="assets/map-real.jpg" alt="the real tactile subway map in the station">
+                    <img class="img-responsive" src="assets/map-laser.png" alt="my laser-cut vector recreation">
+                </div>
+                <h3>Tactile Subway Map</h3>
+                <p>recreated the tactile/braille station map at Jay St&ndash;MetroTech as laser-cut vectors. left: the real one on the wall, right: mine.</p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <a href="https://trustme.baby" target="_blank">
+                    <img class="img-responsive" src="assets/trustme-baby.jpg" alt="trustme.baby homepage">
+                </a>
+                <span class="tag">stupid hackathon &middot; AI</span>
+                <h3><a href="https://trustme.baby" target="_blank">trustme.baby</a></h3>
+                <p>a ragebait app: sign in with Google and a clingy AI &ldquo;Baby&rdquo; rifles through your inbox &amp; calendar and roasts you with your own data. the bit: you clicked &ldquo;Allow.&rdquo;</p>
+            </div>
+        </div>
+
+        <!-- Row 3 -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <span class="tag">photography &middot; layout</span>
+                <img class="img-responsive" src="assets/doors.jpg" alt="grid of photographed doors">
+                <h3>Doors</h3>
+                <p>a little typology &mdash; doors i photographed, aligned and laid out in Illustrator.</p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <span class="tag">photography</span>
+                <img class="img-responsive" src="assets/33thomas.jpg" alt="33 Thomas Street, the windowless AT&T building">
+                <h3>33 Thomas St</h3>
+                <p>shooting the windowless brutalist AT&amp;T &ldquo;Long Lines&rdquo; tower &mdash; the creepiest building in manhattan.</p>
+            </div>
+        </div>
+
+        <!-- Row 4 -->
+        <div class="row">
+            <div class="col-md-6 portfolio-item">
+                <a href="../../airdraw/">
+                    <img class="img-responsive" src="assets/airdraw.jpg" alt="airDraw in action">
+                </a>
+                <span class="tag">p5.js &middot; mediapipe</span>
+                <h3><a href="../../airdraw/">airDraw</a></h3>
+                <p>draw in the air with your fingertip &mdash; hand tracking in the browser.</p>
+            </div>
+            <div class="col-md-6 portfolio-item">
+                <a href="../../smileBigger/">
+                    <div class="portfolio-placeholder">
+                        😉😉😠😀 smileBigger
+                        <small>live demo &mdash; needs your camera</small>
+                    </div>
+                </a>
+                <span class="tag">p5.js &middot; mediapipe</span>
+                <h3><a href="../../smileBigger/">smileBigger</a></h3>
+                <p>a face-expression combo lock: wink left, wink right, get angry, then smile to unlock.</p>
+            </div>
+        </div>
+
+        <hr>
+        <p class="lead">physical bits 🪡🔥</p>
+
+        <!-- Row 5 -->
+        <div class="row">
+            <div class="col-md-4 portfolio-item">
+                <img class="img-responsive" src="assets/plant-stand.jpg" alt="laser-cut plant stand">
+                <h3>Laser-Cut Plant Stand</h3>
+                <p>a little laser-cut stand for a plant.</p>
+            </div>
+            <div class="col-md-4 portfolio-item">
+                <img class="img-responsive" src="assets/cases.jpg" alt="sewn Kindle case">
+                <h3>Kindle + Phone Cases</h3>
+                <p>sewed a padded case for my kindle and one for my phone.</p>
+            </div>
+            <div class="col-md-4 portfolio-item">
+                <img class="img-responsive" src="assets/sweatshirt.jpg" alt="CUT(E) sweatshirt">
+                <h3>CUT(E) Sweatshirt</h3>
+                <p>a cut-up &amp; reworked sweatshirt.</p>
+            </div>
+        </div>
+
+        <hr>
+
+    </div>
+
+    <!-- jQuery -->
+    <script src="../../js/jquery.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="../../js/bootstrap.min.js"></script>
+
+</body>
+
+</html>
