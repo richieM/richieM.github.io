@@ -1,0 +1,46 @@
+<meta name="robots" content="noindex, nofollow">
+<title>probe-factory</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --ground:#F5F5F1;--rule:#D6D6CC;--ink:#16191C;--ink-2:#4A5056;--ink-3:#767C82;
+    --brass:#9A6B12;--brass-bright:#C08A2E;--verdigris:#2F7365;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){:root{--ground:#101418;--rule:#2A3138;--ink:#E8E6E1;--ink-2:#A8AFB6;--ink-3:#767E86;--brass:#D9A247;--brass-bright:#E8B75E;--verdigris:#57A896;}}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);line-height:1.6;
+    display:flex;min-height:100vh;align-items:center;justify-content:center;padding:2rem}
+  .card{max-width:34rem;width:100%}
+  .wm{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--brass);margin-bottom:1.4rem}
+  h1{font-family:var(--serif);font-weight:400;font-size:clamp(1.8rem,5vw,2.6rem);line-height:1.12;letter-spacing:-.015em;margin:0 0 .8rem;text-wrap:balance}
+  h1 em{font-style:italic;color:var(--brass)}
+  p{color:var(--ink-2);margin:0 0 1.8rem;max-width:46ch}
+  .links{display:flex;flex-direction:column;border-top:1px solid var(--rule)}
+  a.row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;
+    padding:1.1rem .2rem;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+  a.row:hover{color:var(--brass)}
+  a.row .t{font-family:var(--serif);font-size:1.15rem}
+  a.row .d{color:var(--ink-3);font-size:.85rem;font-family:var(--mono)}
+  a.row .arr{font-family:var(--mono);color:var(--brass)}
+  .foot{margin-top:1.8rem;font-family:var(--mono);font-size:.72rem;color:var(--ink-3)}
+</style>
+<div class="card">
+  <div class="wm">probe-factory</div>
+  <h1>White-box runtime safety for <em>self-hosted open-weight models.</em></h1>
+  <p>A linear probe on a model's own activations catches misuse before the first output
+     token, cheaper than a guard model — and where intent isn't in the words, it wins by a mile.</p>
+  <div class="links">
+    <a class="row" href="./proof.html">
+      <span><span class="t">The proof &amp; demo</span> <span class="d">7 categories · 4 benchmarks · dual-use slider</span></span>
+      <span class="arr">→</span>
+    </a>
+    <a class="row" href="./launch.html">
+      <span><span class="t">What it is</span> <span class="d">the pitch, one page</span></span>
+      <span class="arr">→</span>
+    </a>
+  </div>
+  <div class="foot">Unlisted preview · reproducible for under $1 of GPU.</div>
+</div>

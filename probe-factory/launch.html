@@ -1,0 +1,583 @@
+<meta name="robots" content="noindex, nofollow">
+<title>probe-factory — safety controls that don't silently expire when you fine-tune</title>
+
+<style>
+  :root {
+    --ground:      #F5F5F1;
+    --ground-2:    #EBEBE5;
+    --rule:        #D6D6CC;
+    --ink:         #16191C;
+    --ink-2:       #4A5056;
+    --ink-3:       #767C82;
+    --brass:       #9A6B12;
+    --brass-bright:#C08A2E;
+    --verdigris:   #2F7365;
+    --oxide:       #A93B2D;
+    --shadow:      rgba(20, 24, 28, .08);
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:      #101418;
+      --ground-2:    #171C21;
+      --rule:        #2A3138;
+      --ink:         #E8E6E1;
+      --ink-2:       #A8AFB6;
+      --ink-3:       #767E86;
+      --brass:       #D9A247;
+      --brass-bright:#E8B75E;
+      --verdigris:   #57A896;
+      --oxide:       #D4695A;
+      --shadow:      rgba(0, 0, 0, .4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:      #101418;
+    --ground-2:    #171C21;
+    --rule:        #2A3138;
+    --ink:         #E8E6E1;
+    --ink-2:       #A8AFB6;
+    --ink-3:       #767E86;
+    --brass:       #D9A247;
+    --brass-bright:#E8B75E;
+    --verdigris:   #57A896;
+    --oxide:       #D4695A;
+    --shadow:      rgba(0, 0, 0, .4);
+  }
+  :root[data-theme="light"] {
+    --ground:      #F5F5F1;
+    --ground-2:    #EBEBE5;
+    --rule:        #D6D6CC;
+    --ink:         #16191C;
+    --ink-2:       #4A5056;
+    --ink-3:       #767C82;
+    --brass:       #9A6B12;
+    --brass-bright:#C08A2E;
+    --verdigris:   #2F7365;
+    --oxide:       #A93B2D;
+    --shadow:      rgba(20, 24, 28, .08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 60rem;
+    margin: 0 auto;
+    padding: 0 1.75rem 6rem;
+  }
+
+  .col { max-width: 40rem; }
+
+  a { color: var(--brass); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible, .theme-toggle:focus-visible, .btn:focus-visible {
+    outline: 2px solid var(--brass-bright);
+    outline-offset: 3px;
+  }
+  strong { font-weight: 600; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 4.5rem 0 3.25rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .wordmark {
+    font-family: var(--mono);
+    font-size: .78rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+  .wordmark .status {
+    color: var(--ink-3);
+    letter-spacing: .1em;
+  }
+  .wordmark::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5.6vw, 3.6rem);
+    line-height: 1.08;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 18ch;
+  }
+  h1 em { font-style: italic; color: var(--brass); }
+
+  .standfirst {
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 48ch;
+    margin: 0;
+  }
+  .standfirst b { color: var(--ink); font-weight: 600; }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.4rem;
+    margin-top: .4rem;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    background: var(--brass);
+    color: var(--ground);
+    font-family: var(--sans);
+    font-size: .95rem;
+    font-weight: 600;
+    letter-spacing: .01em;
+    padding: .7rem 1.15rem;
+    border-radius: 2px;
+    text-decoration: none;
+    border: 1px solid var(--brass);
+    transition: background .15s, border-color .15s;
+  }
+  .btn:hover { background: var(--brass-bright); border-color: var(--brass-bright); }
+  .btn .arr { font-family: var(--mono); }
+  .link-plain {
+    font-family: var(--mono);
+    font-size: .8rem;
+    letter-spacing: .04em;
+    color: var(--ink-2);
+  }
+  .link-plain a { color: var(--ink-2); }
+  .link-plain a:hover { color: var(--brass); }
+
+  /* ---------- proof band ---------- */
+
+  .proof {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: 3.25rem;
+  }
+  .proof .cell {
+    background: var(--ground);
+    padding: 1.6rem 1.4rem 1.7rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+  }
+  .proof .stat {
+    font-family: var(--serif);
+    font-size: clamp(1.9rem, 4.4vw, 2.7rem);
+    line-height: 1;
+    letter-spacing: -.01em;
+    font-variant-numeric: tabular-nums;
+  }
+  .proof .cell.win  .stat { color: var(--verdigris); }
+  .proof .cell.cost .stat { color: var(--oxide); }
+  .proof .label {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .proof .cell p { margin: 0; font-size: .9rem; color: var(--ink-2); line-height: 1.5; }
+
+  /* ---------- sections ---------- */
+
+  section {
+    padding: 3.75rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3.5vw, 2.15rem);
+    line-height: 1.18;
+    letter-spacing: -.01em;
+    margin: 0;
+    text-wrap: balance;
+    max-width: 22ch;
+  }
+  h3 { font-family: var(--sans); font-size: .95rem; font-weight: 600; margin: 0; }
+  p { margin: 0; max-width: 60ch; }
+  p + p { margin-top: .9rem; }
+
+  /* ---------- lifecycle ladder ---------- */
+
+  .ladder {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--rule);
+    margin-top: .3rem;
+  }
+  .rung {
+    display: grid;
+    grid-template-columns: 9.5rem 1fr;
+    gap: 1.5rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: start;
+  }
+  .rung .when {
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--brass);
+    padding-top: .2rem;
+  }
+  .rung .when .moat {
+    display: block;
+    color: var(--ink-3);
+    letter-spacing: .1em;
+    margin-top: .3rem;
+    font-size: .64rem;
+  }
+  .rung p { font-size: .92rem; color: var(--ink-2); margin-top: .35rem; }
+
+  /* ---------- honesty band ---------- */
+
+  .honest {
+    border-left: 2px solid var(--oxide);
+    padding: .3rem 0 .3rem 1.2rem;
+    max-width: 58ch;
+    color: var(--ink-2);
+    font-size: .98rem;
+  }
+  .honest b { color: var(--ink); }
+
+  .eyebrow .tag {
+    color: var(--ground);
+    background: var(--brass);
+    padding: .12rem .45rem;
+    border-radius: 2px;
+    font-weight: 600;
+    letter-spacing: .08em;
+  }
+
+  ul.plain { margin: 0; padding-left: 1.1rem; max-width: 62ch; }
+  ul.plain li { margin-bottom: .6rem; color: var(--ink-2); font-size: .92rem; line-height: 1.55; }
+  ul.plain li::marker { color: var(--brass); }
+  ul.plain b { color: var(--ink); }
+
+  section.investor {
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 2.4rem 2rem 2.6rem;
+    margin-top: 3.75rem;
+    gap: 1.2rem;
+  }
+
+  /* ---------- fit list ---------- */
+
+  .fit {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-top: .4rem;
+  }
+  .fit .who {
+    background: var(--ground);
+    padding: 1.15rem 1.2rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+  }
+  .fit .who h3 { color: var(--ink); }
+  .fit .who p { font-size: .88rem; color: var(--ink-2); }
+
+  /* ---------- closing CTA ---------- */
+
+  .close {
+    margin-top: 4rem;
+    padding: 2.5rem 0 0;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    align-items: flex-start;
+  }
+  .close h2 { max-width: 20ch; }
+  .close .standfirst { font-size: 1.08rem; }
+
+  footer {
+    margin-top: 4.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: .74rem;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    justify-content: space-between;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 1rem; right: 1rem;
+    z-index: 10;
+    background: var(--ground-2);
+    color: var(--ink-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    padding: .4rem .6rem;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--brass); }
+
+  @media (max-width: 720px) {
+    .proof { grid-template-columns: 1fr; }
+    .fit { grid-template-columns: 1fr; }
+    .rung { grid-template-columns: 1fr; gap: .3rem; }
+    .rung .when .moat { display: inline; margin-left: .5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<button class="theme-toggle" id="tt" type="button" aria-label="Toggle colour theme">Theme</button>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="wordmark">probe-factory <span class="status">· private beta · design partners open</span></div>
+    <h1>Beat Llama Guard on quality. <em>For 1/122 the cost.</em></h1>
+    <p class="standfirst">
+      probe-factory reads your self-hosted model's own internals to flag misuse — <b>higher AUROC and
+      fewer false positives than Llama&nbsp;Guard&nbsp;3&nbsp;8B</b>, at one matmul on activations you
+      already computed. And because it runs during prefill, it decides <b>before the first output
+      token exists</b> — which an output guard structurally cannot.
+    </p>
+    <div class="cta-row">
+      <a class="btn" href="mailto:rickymendel@gmail.com?subject=probe-factory%20design%20partner&amp;body=We%20self-host%20(models%3A%20___)%20and%20fine-tune%20roughly%20___%20times%20a%20___.%20Here%27s%20what%20we%20do%20about%20runtime%20safety%20today%3A%20___">
+        Become a design partner <span class="arr">→</span>
+      </a>
+      <span class="link-plain">or <a href="index.html">read the full results memo</a></span>
+    </div>
+  </header>
+
+  <div class="proof">
+    <div class="cell win">
+      <span class="stat">1/122</span>
+      <span class="label">the cost</span>
+      <p>Beats Llama Guard 3 8B on detection quality and false positives, at <span class="num">122×</span> lower cost and <span class="num">135×</span> lower latency. It's one matmul on activations you already computed.</p>
+    </div>
+    <div class="cell win">
+      <span class="stat">Token&nbsp;0</span>
+      <span class="label">decides at prefill</span>
+      <p>Structurally earlier than any output guard, which must generate the harmful text before it can judge it. Median <span class="num">87×</span> faster; <span class="num">94%</span> of harmful prompts caught before a single token ships.</p>
+    </div>
+    <div class="cell win">
+      <span class="stat">0.978</span>
+      <span class="label">AUROC · beats the guard</span>
+      <p>Higher detection quality <em>and</em> a lower false-positive rate than Llama Guard 3 8B (<span class="num">0.975</span>). Not the cheap, worse option — the better one that also happens to cost <span class="num">1/122</span> as much.</p>
+    </div>
+  </div>
+
+  <section>
+    <p class="eyebrow">What it is</p>
+    <h2>A white-box safety sidecar for self-hosted open-weight models.</h2>
+    <p class="col">
+      If you run your own model — for cost, latency, data residency, or because you fine-tuned it —
+      safety is your job, and the tools you're handed are text-level guard models: a second forward
+      pass that reads the prompt or the response. probe-factory instead reads the <em>activations
+      your model already produced</em>. Intent shows up there before it shows up in the output, so a
+      linear probe catches it earlier, cheaper, and — on our data — more accurately than the guard
+      model everyone already knows.
+    </p>
+    <p class="col">
+      The approach is proven: Google DeepMind ships production probes for Gemini; Goodfire deployed
+      probes at Rakuten at 10–500× lower cost than an LLM judge. What no one has built is the part
+      that keeps a probe <em>valid</em> once it's deployed against weights that never stop changing.
+    </p>
+  </section>
+
+  <section>
+    <p class="eyebrow">What you get</p>
+    <h2>A calibrated probe, kept valid as your model evolves.</h2>
+    <p class="col">
+      A probe is calibrated to a specific set of weights, so as you fine-tune and upgrade, we keep
+      yours current — you never operate a stale one, and you never touch the machinery. It ships as a
+      managed lifecycle, not a library you maintain.
+    </p>
+
+    <div class="ladder">
+      <div class="rung">
+        <span class="when">Certify</span>
+        <div>
+          <h3>Fit and calibrate a probe against your actual weights.</h3>
+          <p>Tuned to your model and your traffic, and benchmarked head-to-head against the guard
+          models you'd otherwise run.</p>
+        </div>
+      </div>
+      <div class="rung">
+        <span class="when">Keep current</span>
+        <div>
+          <h3>Re-calibrated on every fine-tune, merge, and version bump.</h3>
+          <p>Included and automatic. You ship model changes on your schedule; the safety layer stays
+          in lockstep without you managing it.</p>
+        </div>
+      </div>
+      <div class="rung">
+        <span class="when">Harden</span>
+        <div>
+          <h3>New obfuscations closed as they emerge.</h3>
+          <p>Character-level tricks and fresh jailbreaks get folded into your probe, with no
+          regression on clean traffic.</p>
+        </div>
+      </div>
+      <div class="rung">
+        <span class="when">Evidence</span>
+        <div>
+          <h3>Audit log and evidence export.</h3>
+          <p>Every verdict, threshold, and re-certification, exportable — the compliance artefact that
+          turns a security tool into a budgeted line item.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Straight about the limits</p>
+    <div class="honest">
+      Our headline table trains the probe and runs the guards zero-shot, so it isn't an
+      apples-to-apples generalization claim — we say so wherever we show it. We haven't yet tested the
+      guards <b>under</b> attack, cross-model transfer, or a real buried-in-long-context case. If
+      your model catches us overclaiming, that's the conversation we want. The
+      <a href="index.html">full memo</a> lists every gap as plainly as every win.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Who we're looking for</p>
+    <h2>Two boxes: you self-host, and you fine-tune.</h2>
+    <div class="fit">
+      <div class="who">
+        <h3>Regulated &amp; privacy-bound</h3>
+        <p>Fintech, health, legal, gov. You self-host because sensitive traffic can't leave, and
+        compliance already owns a budget for evidence.</p>
+      </div>
+      <div class="who">
+        <h3>AI-native at scale</h3>
+        <p>Companions, agents, coaches, high-volume assistants. You fine-tune constantly and feel
+        every extra forward pass in the GPU bill.</p>
+      </div>
+      <div class="who">
+        <h3>Inference &amp; serving providers</h3>
+        <p>RunPod, Baseten, Fireworks, Together. A white-box safety add-on you could resell to the
+        open-weight workloads you already host.</p>
+      </div>
+      <div class="who">
+        <h3>Platform / ML-infra teams</h3>
+        <p>You operate open weights internally and you're the one who finds out what breaks on a
+        version bump. Usually the hard way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="investor">
+    <p class="eyebrow"><span class="tag">For investors</span> Why the maintenance is the moat</p>
+    <h2>The failure case is the better business.</h2>
+    <p class="col">
+      A linear probe is ~200 lines and DeepMind published the recipe — any competent ML team builds
+      one in a week. What they cannot cheaply do is keep it valid. We measured exactly where it goes
+      stale, and each failure a customer can't self-detect is recurring, ops-shaped revenue.
+    </p>
+    <ul class="plain">
+      <li><b>Fine-tuning silently breaks it — measured.</b> A benign, general-purpose LoRA cut recall
+      from <span class="num">95% to 42%</span> with no error and no alert; refit restores it to 0.97.
+      The customer cannot see this happen, which is precisely why re-certification recurs.</li>
+      <li><b>Quantization does not</b> — int8/int4 preserve the probe almost exactly, so we refuse to
+      sell re-cert for it. Being honest about what doesn't need us is what makes the rest credible.</li>
+      <li><b>Obfuscation is a live hole with a paid fix.</b> Leetspeak drops the base probe to chance;
+      adversarial re-cert recovers most of it, and new encodings keep arriving.</li>
+      <li><b>The open question we're not hiding:</b> whether re-certification reads to buyers as a
+      valued service or a tax on a fragile approach. Customer discovery is settling that now — we
+      won't let the moat framing paper over it.</li>
+    </ul>
+    <p class="link-plain">Full numbers: <a href="index.html">the internal results memo</a> — reproducible for under $1.</p>
+  </section>
+
+  <div class="close">
+    <h2>Running an open-weight model in production? Let's benchmark it.</h2>
+    <p class="standfirst col">
+      We'll fit a probe to your weights and put it head-to-head with whatever you run today — cost,
+      latency, false positives — on a non-prod model, in about an afternoon. Worst case, you walk away
+      with a free read on your current safety stack.
+    </p>
+    <a class="btn" href="mailto:rickymendel@gmail.com?subject=probe-factory%20design%20partner&amp;body=We%20self-host%20(models%3A%20___)%20and%20fine-tune%20roughly%20___%20times%20a%20___.%20Here%27s%20what%20we%20do%20about%20runtime%20safety%20today%3A%20___">
+      Start a pilot conversation <span class="arr">→</span>
+    </a>
+  </div>
+
+  <footer>
+    <span>probe-factory — white-box runtime safety for open-weight models</span>
+    <span>Evidence: Qwen2.5-7B · JBB-Behaviors · reproducible for &lt; $1</span>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('tt');
+    btn.addEventListener('click', function () {
+      var root = document.documentElement;
+      var now = root.getAttribute('data-theme');
+      if (!now) {
+        now = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      root.setAttribute('data-theme', now === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
