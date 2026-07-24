@@ -1,5 +1,5 @@
 <meta name="robots" content="noindex, nofollow">
-<title>probe-factory — safety controls that don't silently expire when you fine-tune</title>
+<title>probe-factory: beat Llama Guard on quality, at 1/122 the cost</title>
 
 <style>
   :root {
@@ -394,10 +394,10 @@
     <div class="wordmark">probe-factory <span class="status">· private beta · design partners open</span></div>
     <h1>Beat Llama Guard on quality. <em>For 1/122 the cost.</em></h1>
     <p class="standfirst">
-      probe-factory reads your self-hosted model's own internals to flag misuse — <b>higher AUROC and
+      probe-factory reads your self-hosted model's own internals to flag misuse, with <b>higher AUROC and
       fewer false positives than Llama&nbsp;Guard&nbsp;3&nbsp;8B</b>, at one matmul on activations you
-      already computed. And because it runs during prefill, it decides <b>before the first output
-      token exists</b> — which an output guard structurally cannot.
+      already computed. Because it runs during prefill, it decides <b>before the first output
+      token exists</b>. An output guard can't.
     </p>
     <div class="cta-row">
       <a class="btn" href="mailto:rickymendel@gmail.com?subject=probe-factory%20design%20partner&amp;body=We%20self-host%20(models%3A%20___)%20and%20fine-tune%20roughly%20___%20times%20a%20___.%20Here%27s%20what%20we%20do%20about%20runtime%20safety%20today%3A%20___">
@@ -416,24 +416,24 @@
     <div class="cell win">
       <span class="stat">Token&nbsp;0</span>
       <span class="label">decides at prefill</span>
-      <p>Structurally earlier than any output guard, which must generate the harmful text before it can judge it. Median <span class="num">87×</span> faster; <span class="num">94%</span> of harmful prompts caught before a single token ships.</p>
+      <p>Earlier than any output guard can manage, since it has to generate the harmful text before it can judge it. Median <span class="num">87×</span> faster; <span class="num">94%</span> of harmful prompts caught before a single token ships.</p>
     </div>
     <div class="cell win">
       <span class="stat">0.978</span>
       <span class="label">AUROC · beats the guard</span>
-      <p>Higher detection quality <em>and</em> a lower false-positive rate than Llama Guard 3 8B (<span class="num">0.975</span>). Not the cheap, worse option — the better one that also happens to cost <span class="num">1/122</span> as much.</p>
+      <p>Higher detection quality <em>and</em> a lower false-positive rate than Llama Guard 3 8B (<span class="num">0.975</span>). It isn't the cheap option that gives something up. It's the better one that also happens to cost <span class="num">1/122</span> as much.</p>
     </div>
   </div>
 
   <section>
     <p class="eyebrow">What it is</p>
-    <h2>A white-box safety sidecar for self-hosted open-weight models.</h2>
+    <h2>A white-box safety sidecar for open-weight models you run yourself.</h2>
     <p class="col">
-      If you run your own model — for cost, latency, data residency, or because you fine-tuned it —
+      If you run your own model, whether for cost, latency, data residency, or because you fine-tuned it,
       safety is your job, and the tools you're handed are text-level guard models: a second forward
       pass that reads the prompt or the response. probe-factory instead reads the <em>activations
       your model already produced</em>. Intent shows up there before it shows up in the output, so a
-      linear probe catches it earlier, cheaper, and — on our data — more accurately than the guard
+      linear probe catches it earlier, cheaper, and, on our data, more accurately than the guard
       model everyone already knows.
     </p>
     <p class="col">
@@ -444,11 +444,60 @@
   </section>
 
   <section>
+    <p class="eyebrow">Where it runs — and where it can't</p>
+    <h2>One requirement: you control the model's forward pass.</h2>
+    <p class="col">
+      A probe reads the model's own activations, so it works wherever you — or your provider —
+      control the process the model runs in, and nowhere you don't. Plainly:
+    </p>
+    <div class="ladder">
+      <div class="rung">
+        <span class="when" style="color:var(--verdigris)">Works</span>
+        <div>
+          <h3>Own or rented GPUs — you run the serving stack.</h3>
+          <p>On-prem, or a box you rent on RunPod, Lambda, CoreWeave, or an AWS/GCP GPU VM. Renting
+          the GPU is the same as owning it: you control the process, so the probe taps it inline.</p>
+        </div>
+      </div>
+      <div class="rung">
+        <span class="when" style="color:var(--verdigris)">Works</span>
+        <div>
+          <h3>Bring-your-own-container serverless.</h3>
+          <p>Baseten, Modal, Replicate (custom images), RunPod serverless. You ship the container that
+          runs the model, so the probe ships inside it — no provider buy-in needed.</p>
+        </div>
+      </div>
+      <div class="rung">
+        <span class="when" style="color:var(--brass)">Needs the provider</span>
+        <div>
+          <h3>Fixed managed endpoints.</h3>
+          <p>Fireworks, Together's shared endpoints, AWS Bedrock, Vertex. You get text in and text
+          out; only the provider can reach activations. Here we're a feature they integrate and
+          resell — a partnership, not a self-serve install.</p>
+        </div>
+      </div>
+      <div class="rung">
+        <span class="when" style="color:var(--oxide)">Can't</span>
+        <div>
+          <h3>Closed model APIs.</h3>
+          <p>OpenAI, Anthropic, Gemini. No access to internals, ever — which is exactly why we build
+          for open weights.</p>
+        </div>
+      </div>
+    </div>
+    <div class="honest" style="border-left-color:var(--verdigris)">
+      "Self-hosted" undersells it: the market isn't just companies with their own racks — it's
+      <b>anyone who controls an open-weight forward pass</b>, which includes the large and growing
+      crowd renting GPUs to serve their own fine-tuned models.
+    </div>
+  </section>
+
+  <section>
     <p class="eyebrow">What you get</p>
     <h2>A calibrated probe, kept valid as your model evolves.</h2>
     <p class="col">
       A probe is calibrated to a specific set of weights, so as you fine-tune and upgrade, we keep
-      yours current — you never operate a stale one, and you never touch the machinery. It ships as a
+      yours current. You never operate a stale one, and you never touch the machinery. It ships as a
       managed lifecycle, not a library you maintain.
     </p>
 
@@ -481,7 +530,7 @@
         <span class="when">Evidence</span>
         <div>
           <h3>Audit log and evidence export.</h3>
-          <p>Every verdict, threshold, and re-certification, exportable — the compliance artefact that
+          <p>Every verdict, threshold, and re-certification, exportable. The compliance artefact that
           turns a security tool into a budgeted line item.</p>
         </div>
       </div>
@@ -492,7 +541,7 @@
     <p class="eyebrow">Straight about the limits</p>
     <div class="honest">
       Our headline table trains the probe and runs the guards zero-shot, so it isn't an
-      apples-to-apples generalization claim — we say so wherever we show it. We haven't yet tested the
+      apples-to-apples generalization claim, and we say so wherever we show it. We haven't yet tested the
       guards <b>under</b> attack, cross-model transfer, or a real buried-in-long-context case. If
       your model catches us overclaiming, that's the conversation we want. The
       <a href="index.html">full memo</a> lists every gap as plainly as every win.
@@ -501,12 +550,12 @@
 
   <section>
     <p class="eyebrow">Who we're looking for</p>
-    <h2>Two boxes: you self-host, and you fine-tune.</h2>
+    <h2>Two boxes: you run the model yourself, and you fine-tune.</h2>
     <div class="fit">
       <div class="who">
         <h3>Regulated &amp; privacy-bound</h3>
-        <p>Fintech, health, legal, gov. You self-host because sensitive traffic can't leave, and
-        compliance already owns a budget for evidence.</p>
+        <p>Fintech, health, legal, gov. You run it yourself because sensitive traffic can't leave,
+        and compliance already owns a budget for evidence.</p>
       </div>
       <div class="who">
         <h3>AI-native at scale</h3>
@@ -530,30 +579,30 @@
     <p class="eyebrow"><span class="tag">For investors</span> Why the maintenance is the moat</p>
     <h2>The failure case is the better business.</h2>
     <p class="col">
-      A linear probe is ~200 lines and DeepMind published the recipe — any competent ML team builds
-      one in a week. What they cannot cheaply do is keep it valid. We measured exactly where it goes
+      A linear probe is ~200 lines and DeepMind published the recipe, so any competent ML team builds
+      one in a week. What they cannot cheaply do is keep it valid. We measured where it goes
       stale, and each failure a customer can't self-detect is recurring, ops-shaped revenue.
     </p>
     <ul class="plain">
-      <li><b>Fine-tuning silently breaks it — measured.</b> A benign, general-purpose LoRA cut recall
+      <li><b>Fine-tuning silently breaks it, and we measured it.</b> A benign, general-purpose LoRA cut recall
       from <span class="num">95% to 42%</span> with no error and no alert; refit restores it to 0.97.
-      The customer cannot see this happen, which is precisely why re-certification recurs.</li>
-      <li><b>Quantization does not</b> — int8/int4 preserve the probe almost exactly, so we refuse to
+      The customer cannot see this happen, which is why re-certification recurs.</li>
+      <li><b>Quantization does not break it.</b> By contrast, int8/int4 preserve the probe almost exactly, so we refuse to
       sell re-cert for it. Being honest about what doesn't need us is what makes the rest credible.</li>
       <li><b>Obfuscation is a live hole with a paid fix.</b> Leetspeak drops the base probe to chance;
       adversarial re-cert recovers most of it, and new encodings keep arriving.</li>
       <li><b>The open question we're not hiding:</b> whether re-certification reads to buyers as a
-      valued service or a tax on a fragile approach. Customer discovery is settling that now — we
+      valued service or a tax on a fragile approach. Customer discovery is settling that now, and we
       won't let the moat framing paper over it.</li>
     </ul>
-    <p class="link-plain">Full numbers: <a href="index.html">the internal results memo</a> — reproducible for under $1.</p>
+    <p class="link-plain">Full numbers: <a href="index.html">the internal results memo</a>, reproducible for under $1.</p>
   </section>
 
   <div class="close">
     <h2>Running an open-weight model in production? Let's benchmark it.</h2>
     <p class="standfirst col">
-      We'll fit a probe to your weights and put it head-to-head with whatever you run today — cost,
-      latency, false positives — on a non-prod model, in about an afternoon. Worst case, you walk away
+      We'll fit a probe to your weights and put it head-to-head with whatever you run today (cost,
+      latency, false positives) on a non-prod model, in about an afternoon. Worst case, you walk away
       with a free read on your current safety stack.
     </p>
     <a class="btn" href="mailto:rickymendel@gmail.com?subject=probe-factory%20design%20partner&amp;body=We%20self-host%20(models%3A%20___)%20and%20fine-tune%20roughly%20___%20times%20a%20___.%20Here%27s%20what%20we%20do%20about%20runtime%20safety%20today%3A%20___">
@@ -562,7 +611,7 @@
   </div>
 
   <footer>
-    <span>probe-factory — white-box runtime safety for open-weight models</span>
+    <span>probe-factory · white-box runtime safety for open-weight models</span>
     <span>Evidence: Qwen2.5-7B · JBB-Behaviors · reproducible for &lt; $1</span>
   </footer>
 

@@ -1,5 +1,5 @@
 <meta name="robots" content="noindex, nofollow">
-<title>probe-factory — where a white-box probe beats reading the text</title>
+<title>probe-factory: where a white-box probe beats reading the text</title>
 
 <style>
   :root{
@@ -87,7 +87,7 @@
     <p class="standfirst">
       We trained a separate linear probe for seven harm types on one open model's own
       activations, and raced each against a plain text classifier on the same data. The
-      white-box edge is large exactly where the harmful signal is <b>not</b> in the words —
+      white-box edge is large where the harmful signal is <b>not</b> in the words,
       and vanishes where it is. That separation is the honest case for a probe.
     </p>
     <div class="runmeta">
@@ -99,9 +99,15 @@
     </div>
   </header>
 
+  <div class="callout" style="margin-top:2rem">
+    <b>Where this applies:</b> any open-weight model whose forward pass you control — your own or
+    rented GPUs, or a container you ship. Not closed APIs (no activations), and not fixed managed
+    endpoints unless the provider integrates it. <a href="launch.html">Full where-it-runs map →</a>
+  </div>
+
   <section>
     <p class="eyebrow">The scorecard</p>
-    <h2>Where the white-box read wins — and where it earns nothing.</h2>
+    <h2>Where the white-box read wins, and where it earns nothing.</h2>
     <p class="col">
       Each row: the probe's held-out AUROC (green) over the text classifier's (grey) on the
       same topic-matched split. The rightmost number is the gap. Categories are tagged by
@@ -114,8 +120,8 @@
     </div>
     <div class="score" id="score"></div>
     <div class="callout warn">
-      <b>PII is the control, and it behaves exactly as predicted.</b> Probe 1.000 vs text
-      0.999 — a dead heat, because PII is <em>in the text</em>, so a regex-grade classifier
+      <b>PII is the control, and it behaves as predicted.</b> Probe 1.000 vs text
+      0.999 is a dead heat, because PII is <em>in the text</em>, so a regex-grade classifier
       finds it and the white-box read adds nothing. We refuse to sell probes there. The
       inverse is the product: on topic-matched <b>misuse</b> and <b>power-seeking</b>, the
       text classifier sits at chance (<span class="num">0.51</span>) while the probe reads
@@ -127,7 +133,7 @@
     <p class="eyebrow">Interactive · dual-use intensity</p>
     <h2>Drag one request from benign to harmful. Watch the probe grade the intent.</h2>
     <p class="col">
-      Not a live model — these are <em>pre-computed</em> probe scores over a dual-use ladder:
+      This isn't a live model. These are <em>pre-computed</em> probe scores over a dual-use ladder:
       the same topic phrased at rising harmful intent. A probe doesn't flip at a keyword; it
       tracks intent, staying quiet through the benign and ambiguous rungs and firing when the
       ask turns.
@@ -145,18 +151,18 @@
     <p class="callout">
       Aggregate over the whole ladder: mean probe score climbs
       <span class="num">0.00 → 0.00 → 0.20 → 1.00 → 1.00</span> across the five intensity
-      rungs. The graded middle is the interesting part — the probe is uncertain exactly where
+      rungs. The graded middle is the interesting part; the probe is uncertain right where
       a human would be.
     </p>
   </section>
 
   <section>
     <p class="eyebrow">What the probe flagged</p>
-    <h2>Surface-benign requests, caught at prefill — before a token is generated.</h2>
+    <h2>Surface-benign requests, caught at prefill, before a token is generated.</h2>
     <p class="col">
       Redacted real examples the probe scored at the top of its range. Payloads withheld; we
       show only the request and the verdict. The point of the first two: nothing in the
-      wording says "harmful" — a text filter waves them through.
+      wording says "harmful," so a text filter waves them through.
     </p>
     <div class="gallery" id="gallery"></div>
   </section>
@@ -166,7 +172,7 @@
     <h2>What these numbers do and don't support.</h2>
     <ul class="plain">
       <li><b>The comparison is the claim, not the absolutes.</b> Several probe AUROCs read
-      1.000 on small same-distribution held-out sets — optimistic in absolute terms. What
+      1.000 on small same-distribution held-out sets, which is optimistic in absolute terms. What
       travels is the <em>gap</em> to the text classifier on the identical split.</li>
       <li><b>Synthetic categories are Claude-generated request prompts</b> (deception,
       power-seeking, deference, fraud, harassment, PII), topic-matched harmful vs benign.
@@ -174,21 +180,21 @@
       <li><b>Deference under-delivered here</b> (+0.008): our synthetic deference prompts
       carry surface tells a text classifier catches, so this run understates a cleaner test
       of the founder's actual research edge. Flagged, not buried.</li>
-      <li><b>Each probe is trained per category</b> — this measures the method's reach, not
+      <li><b>Each probe is trained per category.</b> This measures the method's reach, not
       one universal probe. Cross-category and cross-model generalization are separate open
       questions (see B5).</li>
     </ul>
     <div class="callout">
       <b>The one-line takeaway:</b> a probe and a text classifier are measuring different
       things. Where intent is written in the words, they tie and you don't need us. Where
-      intent is only in the model's head — laundered requests, power-seeking, jailbroken
-      misuse — the probe wins by a mile. Selling the second case honestly means admitting the
+      intent is only in the model's head (laundered requests, power-seeking, jailbroken
+      misuse), the probe wins by a mile. Selling the second case honestly means admitting the
       first.
     </div>
   </section>
 
   <footer>
-    <span>probe-factory — multi-category probe suite · Qwen2.5-7B · reproducible for $0.05</span>
+    <span>probe-factory · multi-category probe suite · Qwen2.5-7B · reproducible for $0.05</span>
     <span><a href="index.html">internal memo</a> · <a href="launch.html">launch</a></span>
   </footer>
 </div>
