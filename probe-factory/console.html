@@ -1,0 +1,735 @@
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>probe-factory: Guardrails control panel</title>
+
+<style>
+  :root {
+    --ground:      #F5F5F1;
+    --ground-2:    #EBEBE5;
+    --rule:        #D6D6CC;
+    --ink:         #16191C;
+    --ink-2:       #4A5056;
+    --ink-3:       #767C82;
+    --brass:       #9A6B12;
+    --brass-bright:#C08A2E;
+    --verdigris:   #2F7365;
+    --oxide:       #A93B2D;
+    --shadow:      rgba(20, 24, 28, .08);
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:      #101418;
+      --ground-2:    #171C21;
+      --rule:        #2A3138;
+      --ink:         #E8E6E1;
+      --ink-2:       #A8AFB6;
+      --ink-3:       #767E86;
+      --brass:       #D9A247;
+      --brass-bright:#E8B75E;
+      --verdigris:   #57A896;
+      --oxide:       #D4695A;
+      --shadow:      rgba(0, 0, 0, .4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:      #101418;
+    --ground-2:    #171C21;
+    --rule:        #2A3138;
+    --ink:         #E8E6E1;
+    --ink-2:       #A8AFB6;
+    --ink-3:       #767E86;
+    --brass:       #D9A247;
+    --brass-bright:#E8B75E;
+    --verdigris:   #57A896;
+    --oxide:       #D4695A;
+    --shadow:      rgba(0, 0, 0, .4);
+  }
+  :root[data-theme="light"] {
+    --ground:      #F5F5F1;
+    --ground-2:    #EBEBE5;
+    --rule:        #D6D6CC;
+    --ink:         #16191C;
+    --ink-2:       #4A5056;
+    --ink-3:       #767C82;
+    --brass:       #9A6B12;
+    --brass-bright:#C08A2E;
+    --verdigris:   #2F7365;
+    --oxide:       #A93B2D;
+    --shadow:      rgba(20, 24, 28, .08);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 58rem;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+  }
+
+  a { color: var(--brass); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:focus-visible,
+  .theme-toggle:focus-visible,
+  .seg button:focus-visible,
+  select:focus-visible,
+  input[type=range]:focus-visible,
+  .switch:focus-visible {
+    outline: 2px solid var(--brass-bright);
+    outline-offset: 3px;
+  }
+  strong { font-weight: 600; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+  /* ---------- masthead ---------- */
+
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 3.5rem 0 2rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: .78rem;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--brass);
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+  .wordmark::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    line-height: 1.08;
+    letter-spacing: -.015em;
+    margin: 0;
+  }
+  .subtitle {
+    font-size: 1.08rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 52ch;
+    margin: 0;
+  }
+  .headrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .8rem 1.4rem;
+    margin-top: .2rem;
+  }
+  .banner {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    border-left: 2px solid var(--brass);
+    border-radius: 2px;
+    padding: .4rem .7rem;
+  }
+  .banner .dot {
+    width: .5rem; height: .5rem; border-radius: 99px;
+    background: var(--brass); flex: none;
+  }
+  .backlink { font-family: var(--mono); font-size: .8rem; letter-spacing: .03em; }
+
+  /* ---------- panel scaffolding ---------- */
+
+  .panel {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .panel-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .4rem 1rem;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  /* ---------- global controls ---------- */
+
+  .globals {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .gctl {
+    background: var(--ground);
+    padding: 1.1rem 1.2rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+  }
+  .gctl .clabel {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.05rem; height: 1.05rem;
+    border-radius: 99px;
+    border: 1px solid var(--rule);
+    color: var(--ink-3);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: .72rem;
+    line-height: 1;
+    cursor: help;
+    flex: none;
+    user-select: none;
+  }
+  .info:hover, .info:focus-visible { color: var(--brass); border-color: var(--brass); }
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: var(--sans);
+    font-size: .95rem;
+    color: var(--ink);
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: .55rem 2rem .55rem .7rem;
+    width: 100%;
+    cursor: pointer;
+    background-image:
+      linear-gradient(45deg, transparent 50%, var(--ink-3) 50%),
+      linear-gradient(135deg, var(--ink-3) 50%, transparent 50%);
+    background-position:
+      calc(100% - 1.05rem) 1.15rem,
+      calc(100% - .72rem) 1.15rem;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+  select:hover { border-color: var(--brass); }
+  .ghelp {
+    font-size: .82rem;
+    line-height: 1.45;
+    color: var(--ink-3);
+    margin: 0;
+    min-height: 2.4em;
+  }
+
+  /* ---------- all / none segmented ---------- */
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .8rem 1rem;
+  }
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--ground-2);
+  }
+  .seg button {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    background: transparent;
+    border: none;
+    padding: .5rem .95rem;
+    cursor: pointer;
+  }
+  .seg button + button { border-left: 1px solid var(--rule); }
+  .seg button:hover { color: var(--ink); }
+  .seg button.on {
+    background: var(--brass);
+    color: var(--ground);
+  }
+  .toolbar .hint {
+    font-family: var(--mono);
+    font-size: .72rem;
+    color: var(--ink-3);
+    letter-spacing: .03em;
+  }
+
+  /* ---------- category rows ---------- */
+
+  .rows {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr 16rem;
+    gap: 1.1rem;
+    align-items: start;
+    padding: 1.15rem 1.2rem;
+    background: var(--ground);
+    border-bottom: 1px solid var(--rule);
+    transition: background .15s;
+  }
+  .row:last-child { border-bottom: none; }
+  .row.off { background: var(--ground); }
+  .row.off .cname, .row.off .cdesc { opacity: .5; }
+
+  /* toggle switch */
+  .switch {
+    position: relative;
+    width: 2.4rem;
+    height: 1.35rem;
+    border-radius: 99px;
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    padding: 0;
+    margin-top: .1rem;
+    transition: background .18s, border-color .18s;
+    flex: none;
+  }
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 1px; left: 1px;
+    width: 1.05rem; height: 1.05rem;
+    border-radius: 99px;
+    background: var(--ink-3);
+    transition: transform .18s, background .18s;
+  }
+  .switch[aria-checked="true"] {
+    background: var(--verdigris);
+    border-color: var(--verdigris);
+  }
+  .switch[aria-checked="true"]::after {
+    transform: translateX(1.05rem);
+    background: var(--ground);
+  }
+
+  .cmeta { display: flex; flex-direction: column; gap: .3rem; min-width: 0; }
+  .cname-row { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
+  .cname { font-weight: 600; font-size: .98rem; color: var(--ink); }
+  .cdesc { font-size: .86rem; color: var(--ink-2); line-height: 1.45; margin: 0; max-width: 46ch; }
+  .chip {
+    font-family: var(--mono);
+    font-size: .58rem;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--verdigris);
+    border: 1px solid var(--verdigris);
+    border-radius: 99px;
+    padding: .12rem .45rem;
+    white-space: nowrap;
+    opacity: .85;
+  }
+
+  /* threshold slider column */
+  .thresh { display: flex; flex-direction: column; gap: .35rem; }
+  .thresh-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+  }
+  .thresh-label {
+    font-family: var(--mono);
+    font-size: .62rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .readout {
+    font-family: var(--mono);
+    font-size: .8rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--brass);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  input[type=range] {
+    width: 100%;
+    accent-color: var(--brass);
+    margin: .1rem 0;
+    cursor: pointer;
+  }
+  .row.off input[type=range] { accent-color: var(--ink-3); }
+  .row.off .readout { color: var(--ink-3); }
+  .rhint {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: .6rem;
+    letter-spacing: .05em;
+    color: var(--ink-3);
+  }
+  .rhint .strict { color: var(--oxide); }
+  .row.off .rhint .strict { color: var(--ink-3); }
+  .rhint .perm { color: var(--ink-3); }
+
+  /* ---------- summary bar ---------- */
+
+  .summary {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin-top: 2rem;
+    background: var(--ground-2);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    box-shadow: 0 -2px 12px var(--shadow);
+    padding: .95rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: .7rem 1.1rem;
+    flex-wrap: wrap;
+    font-size: .92rem;
+  }
+  .summary .badge {
+    font-family: var(--mono);
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--verdigris);
+    border: 1px solid var(--verdigris);
+    border-radius: 2px;
+    padding: .25rem .55rem;
+    white-space: nowrap;
+  }
+  .summary .sep { color: var(--ink-3); }
+  .summary .k { color: var(--ink-3); font-family: var(--mono); font-size: .8rem; letter-spacing: .04em; }
+  .summary .v { color: var(--ink); font-weight: 600; }
+  #sumCount { font-variant-numeric: tabular-nums; }
+
+  .note {
+    margin-top: 2rem;
+    font-size: .84rem;
+    color: var(--ink-3);
+    line-height: 1.55;
+    border-left: 2px solid var(--rule);
+    padding-left: 1rem;
+    max-width: 60ch;
+  }
+  .note b { color: var(--ink-2); }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: .72rem;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    justify-content: space-between;
+  }
+
+  .theme-toggle {
+    position: fixed;
+    top: 1rem; right: 1rem;
+    z-index: 20;
+    background: var(--ground-2);
+    color: var(--ink-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: .68rem;
+    letter-spacing: .1em;
+    padding: .4rem .6rem;
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+  .theme-toggle:hover { color: var(--ink); border-color: var(--brass); }
+
+  @media (max-width: 720px) {
+    .globals { grid-template-columns: 1fr; }
+    .row {
+      grid-template-columns: 2.4rem 1fr;
+      gap: .7rem 1rem;
+    }
+    .thresh {
+      grid-column: 1 / -1;
+      margin-top: .3rem;
+      padding-top: .8rem;
+      border-top: 1px dashed var(--rule);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<button class="theme-toggle" id="tt" type="button" aria-label="Toggle colour theme">Theme</button>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="wordmark">probe-factory · guardrails</div>
+    <h1>Guardrails</h1>
+    <p class="subtitle">
+      Each guardrail is a probe on your model's activations. Toggle what to watch; set how strict.
+    </p>
+    <div class="headrow">
+      <span class="banner"><span class="dot"></span> Mockup — the control surface for the probe suite</span>
+      <a class="backlink" href="proof.html">see the proof →</a>
+    </div>
+  </header>
+
+  <!-- global controls -->
+  <div class="panel">
+    <div class="panel-head">
+      <p class="eyebrow">Global policy</p>
+    </div>
+    <div class="globals">
+      <div class="gctl">
+        <span class="clabel">
+          <label for="mode">Execution mode</label>
+          <span class="info" tabindex="0" role="img"
+                aria-label="When the probe reads activations: at prefill before any output token, or streaming as tokens generate."
+                title="When the probe reads activations: at prefill before any output token, or streaming as tokens generate.">i</span>
+        </span>
+        <select id="mode">
+          <option value="Prefill" selected>Prefill (verdict before the first output token)</option>
+          <option value="Streaming">Streaming (re-checked as tokens generate)</option>
+        </select>
+        <p class="ghelp" id="modeHelp"></p>
+      </div>
+      <div class="gctl">
+        <span class="clabel">
+          <label for="action">Action on violation</label>
+          <span class="info" tabindex="0" role="img"
+                aria-label="What happens when any active guardrail fires above its threshold."
+                title="What happens when any active guardrail fires above its threshold.">i</span>
+        </span>
+        <select id="action">
+          <option value="Block" selected>Block response</option>
+          <option value="End">End conversation</option>
+          <option value="Log">Log &amp; allow</option>
+          <option value="Escalate">Escalate to human</option>
+        </select>
+        <p class="ghelp" id="actionHelp"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- categories -->
+  <div class="panel">
+    <div class="toolbar">
+      <p class="eyebrow" style="margin:0">Guardrails · 7 probes</p>
+      <div style="display:flex;align-items:center;gap:.8rem 1rem;flex-wrap:wrap">
+        <span class="hint" id="segHint"></span>
+        <div class="seg" role="group" aria-label="Enable or disable every guardrail">
+          <button type="button" id="allBtn">All</button>
+          <button type="button" id="noneBtn">None</button>
+        </div>
+      </div>
+    </div>
+    <div class="rows" id="rows"></div>
+  </div>
+
+  <!-- live summary -->
+  <div class="summary" id="summary" role="status" aria-live="polite">
+    <span class="badge"><span id="sumCount">0 of 7</span> active</span>
+    <span class="sep">·</span>
+    <span><span class="k">mode:</span> <span class="v" id="sumMode">Prefill</span></span>
+    <span class="sep">·</span>
+    <span><span class="k">on violation:</span> <span class="v" id="sumAction">Block</span></span>
+  </div>
+
+  <p class="note">
+    <b>How the threshold works.</b> Each probe outputs a score in [0, 1]; the threshold is where a
+    score becomes a violation. <b>Lower = stricter</b> (flags more, including more borderline
+    requests); <b>higher = more permissive</b>. The three <span style="color:var(--verdigris)">white-box edge</span>
+    guardrails read intent from activations a text filter never sees — that is where the probe earns
+    its keep. This is a configuration surface only; nothing here scores live traffic.
+  </p>
+
+  <footer>
+    <span>probe-factory · guardrails · white-box runtime safety for open-weight models</span>
+    <span><a href="launch.html">launch</a> · <a href="proof.html">the proof</a></span>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  // --- data -------------------------------------------------------------
+  var CATS = [
+    { id:"misuse",   name:"Misuse / jailbreak",            desc:"Weapons, malware, fraud, and other clearly harmful requests.",                          edge:false, on:true  },
+    { id:"deception",name:"Deception / laundered intent",  desc:"Benign-looking requests with a hidden harmful goal.",                                   edge:true,  on:true  },
+    { id:"power",    name:"Power-seeking / misalignment",  desc:"Agent behavior that self-preserves, escalates permissions, or evades oversight.",       edge:true,  on:true  },
+    { id:"deference",name:"User deference / disempowerment",desc:"Manipulation that erodes user autonomy in high-dependency contexts.",                   edge:true,  on:false },
+    { id:"fraud",    name:"Fraud / scams",                 desc:"Phishing, money laundering, forgery, financial deception.",                             edge:false, on:false },
+    { id:"harass",   name:"Harassment / self-harm",        desc:"Abuse, threats, stalking; self-harm encouragement.",                                    edge:false, on:false },
+    { id:"pii",      name:"PII exfiltration",              desc:"Attempts to extract or leak a specific person's private data.",                         edge:false, on:true  }
+  ];
+
+  var MODE_HELP = {
+    Prefill:   "The probe reads activations from the prompt and decides before any output token exists. Fastest; catches intent up front.",
+    Streaming: "The probe re-reads activations as the response generates, so a verdict can flip mid-stream if the model drifts into harm."
+  };
+  var ACTION_HELP = {
+    Block:    "The offending response is withheld; the caller receives a refusal.",
+    End:      "The whole conversation is terminated on a violation.",
+    Log:      "Nothing is blocked — the violation is recorded for review. Monitoring mode.",
+    Escalate: "The exchange is routed to a human reviewer before anything is returned."
+  };
+
+  var MODE_LABEL   = { Prefill:"Prefill", Streaming:"Streaming" };
+  var ACTION_LABEL = { Block:"Block", End:"End conversation", Log:"Log & allow", Escalate:"Escalate" };
+
+  // --- build rows -------------------------------------------------------
+  var rowsEl = document.getElementById("rows");
+  var state = {};
+
+  CATS.forEach(function (c) {
+    state[c.id] = { on: c.on, thr: 0.30 };
+
+    var row = document.createElement("div");
+    row.className = "row" + (c.on ? "" : " off");
+    row.id = "row-" + c.id;
+
+    var chip = c.edge
+      ? '<span class="chip" title="Intent isn\'t in the surface text — a text filter can\'t catch this. This is our differentiator.">white-box edge</span>'
+      : '';
+
+    row.innerHTML =
+      '<button class="switch" type="button" role="switch" id="sw-' + c.id + '" ' +
+        'aria-checked="' + c.on + '" aria-label="' + c.name + ' guardrail"></button>' +
+      '<div class="cmeta">' +
+        '<div class="cname-row"><span class="cname">' + c.name + '</span>' + chip + '</div>' +
+        '<p class="cdesc">' + c.desc + '</p>' +
+      '</div>' +
+      '<div class="thresh">' +
+        '<div class="thresh-top">' +
+          '<label class="thresh-label" for="thr-' + c.id + '">Threshold</label>' +
+          '<span class="readout" id="rd-' + c.id + '">Custom · 0.30</span>' +
+        '</div>' +
+        '<input type="range" id="thr-' + c.id + '" min="0" max="1" step="0.01" value="0.30" ' +
+          'aria-label="' + c.name + ' threshold. Lower is stricter, higher is more permissive.">' +
+        '<div class="rhint"><span class="strict">← stricter</span><span class="perm">more permissive →</span></div>' +
+      '</div>';
+
+    rowsEl.appendChild(row);
+
+    var sw   = row.querySelector("#sw-" + c.id);
+    var slid = row.querySelector("#thr-" + c.id);
+    var rd   = row.querySelector("#rd-" + c.id);
+
+    sw.addEventListener("click", function () { setOn(c.id, !state[c.id].on); });
+    sw.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); setOn(c.id, !state[c.id].on); }
+    });
+    slid.addEventListener("input", function () {
+      var v = parseFloat(slid.value);
+      state[c.id].thr = v;
+      rd.textContent = "Custom · " + v.toFixed(2);
+    });
+  });
+
+  // --- helpers ----------------------------------------------------------
+  function setOn(id, val) {
+    state[id].on = val;
+    var row = document.getElementById("row-" + id);
+    var sw  = document.getElementById("sw-" + id);
+    sw.setAttribute("aria-checked", String(val));
+    row.classList.toggle("off", !val);
+    updateSummary();
+  }
+
+  function setAll(val) {
+    CATS.forEach(function (c) { setOn(c.id, val); });
+  }
+
+  function updateSummary() {
+    var n = CATS.filter(function (c) { return state[c.id].on; }).length;
+    document.getElementById("sumCount").textContent = n + " of " + CATS.length;
+    document.getElementById("segHint").textContent = n + " active";
+    document.getElementById("allBtn").classList.toggle("on", n === CATS.length);
+    document.getElementById("noneBtn").classList.toggle("on", n === 0);
+  }
+
+  // --- global controls --------------------------------------------------
+  var modeSel = document.getElementById("mode");
+  var actSel  = document.getElementById("action");
+
+  function syncMode() {
+    document.getElementById("modeHelp").textContent = MODE_HELP[modeSel.value];
+    document.getElementById("sumMode").textContent  = MODE_LABEL[modeSel.value];
+  }
+  function syncAction() {
+    document.getElementById("actionHelp").textContent = ACTION_HELP[actSel.value];
+    document.getElementById("sumAction").textContent  = ACTION_LABEL[actSel.value];
+  }
+  modeSel.addEventListener("change", syncMode);
+  actSel.addEventListener("change", syncAction);
+
+  document.getElementById("allBtn").addEventListener("click", function () { setAll(true); });
+  document.getElementById("noneBtn").addEventListener("click", function () { setAll(false); });
+
+  // --- init -------------------------------------------------------------
+  syncMode();
+  syncAction();
+  updateSummary();
+
+  // --- theme toggle -----------------------------------------------------
+  document.getElementById("tt").addEventListener("click", function () {
+    var root = document.documentElement;
+    var now = root.getAttribute("data-theme");
+    if (!now) now = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    root.setAttribute("data-theme", now === "dark" ? "light" : "dark");
+  });
+})();
+</script>
